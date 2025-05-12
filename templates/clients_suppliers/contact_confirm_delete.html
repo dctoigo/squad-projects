@@ -1,10 +1,17 @@
-{% extends 'base/base.html' %}
+{% extends "base/base.html" %}
 {% block title %}Delete Contact{% endblock %}
+
 {% block content %}
-  <h1>Delete Contact</h1>
-  <p>Delete “{{ object.name }}” from {{ object.party.name }}?</p>
-  <form method="post">{% csrf_token %}
-    <button type="submit">Confirm</button>
-    <a href="{% url 'clients_suppliers:party_detail' object.party.pk %}">Cancel</a>
-  </form>
+<div class="card border-danger">
+  <div class="card-body">
+    <h2 class="card-title text-danger">Delete Contact</h2>
+    <p>Delete “<strong>{{ object.name }}</strong>” from {{ object.party.name }}?</p>
+    <form method="post">
+      {% csrf_token %}
+      <button class="btn btn-danger" type="submit">Confirm</button>
+      <a class="btn btn-secondary ms-2"
+         href="{% url 'clients_suppliers:party_detail' object.party.pk %}">Cancel</a>
+    </form>
+  </div>
+</div>
 {% endblock %}

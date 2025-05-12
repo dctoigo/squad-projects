@@ -1,24 +1,31 @@
-{% extends 'base/base.html' %}
-{% block title %}{% if form.instance.pk %}Edit Party{% else %}New Party{% endif %}{% endblock %}
+{% extends "base/base.html" %}
+{% block title %}
+  {% if form.instance.pk %}Edit Party{% else %}New Party{% endif %}
+{% endblock %}
+
 {% block content %}
-<h1>{% if form.instance.pk %}Edit Party{% else %}New Party{% endif %}</h1>
-<form method="post">{% csrf_token %}
-  {{ form.non_field_errors }}
-  {% for field in form.visible_fields %}
-    <div>
-      {{ field.label_tag }}
-      {{ field.as_widget(attrs={
-          'class': field.errors and 'error' or ''
-      }) }}
-      {% if field.errors %}
-        <ul class="errorlist">
+<div class="card">
+  <div class="card-body">
+    <h2 class="card-title mb-4">
+      {% if form.instance.pk %}Edit Party{% else %}New Party{% endif %}
+    </h2>
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+      {% for field in form.visible_fields %}
+        <div class="mb-3">
+          {{ field.label_tag(attrs={'class':'form-label'}) }}
+          {{ field.as_widget(attrs={
+               'class': 'form-control' + (field.errors and ' is-invalid' or '')
+          }) }}
           {% for err in field.errors %}
-            <li>{{ err }}</li>
+            <div class="invalid-feedback">{{ err }}</div>
           {% endfor %}
-        </ul>
-      {% endif %}
-    </div>
-  {% endfor %}
-  <button type="submit">Save</button>
-</form>
+        </div>
+      {% endfor %}
+      <button class="btn btn-primary" type="submit">Save</button>
+      <a class="btn btn-secondary ms-2" href="{% url 'clients_suppliers:party_list' %}">Cancel</a>
+    </form>
+  </div>
+</div>
 {% endblock %}

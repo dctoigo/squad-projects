@@ -1,32 +1,48 @@
-{% extends 'base/base.html' %}
+{% extends "base/base.html" %}
 {% block title %}{{ party.name }}{% endblock %}
+
 {% block content %}
-  <h1>{{ party.name }} ({{ party.get_type_display }})</h1>
-  <p><strong>Legal Name:</strong> {{ party.legal_name }}</p>
-  <p><strong>CNPJ:</strong> {{ party.cnpj }}</p>
-  <p><strong>Address:</strong> {{ party.address }}, {{ party.city }}/{{ party.state }}</p>
-  <p><strong>Billing Email:</strong> {{ party.billing_email }}</p>
-  <p><strong>Notes:</strong> {{ party.notes|default:"-" }}</p>
-  <hr>
-  <h2>Contacts</h2>
-  <a href="{% url 'clients_suppliers:contact_add' party.pk %}">+ New Contact</a>
-  <table>
-    <thead><tr><th>Name</th><th>Position</th><th>Email</th><th>Actions</th></tr></thead>
-    <tbody>
-      {% for c in party.contacts.all %}
+<div class="card mb-4">
+  <div class="card-body">
+    <h2 class="card-title">{{ party.name }} <small class="text-muted">({{ party.get_type_display }})</small></h2>
+    <dl class="row mb-0">
+      <dt class="col-sm-3">Legal Name</dt><dd class="col-sm-9">{{ party.legal_name }}</dd>
+      <dt class="col-sm-3">CNPJ</dt><dd class="col-sm-9">{{ party.cnpj|default:"—" }}</dd>
+      <dt class="col-sm-3">Address</dt><dd class="col-sm-9">{{ party.address }}, {{ party.city }}/{{ party.state }}</dd>
+      <dt class="col-sm-3">Billing Email</dt><dd class="col-sm-9">{{ party.billing_email }}</dd>
+      <dt class="col-sm-3">Notes</dt><dd class="col-sm-9">{{ party.notes|default:"—" }}</dd>
+    </dl>
+    <div class="mt-3">
+      <a class="btn btn-sm btn-outline-primary" href="{% url 'clients_suppliers:party_edit' party.pk %}">Edit Party</a>
+      <a class="btn btn-sm btn-outline-secondary" href="{% url 'clients_suppliers:party_list' %}">&larr; Back to list</a>
+    </div>
+  </div>
+</div>
+
+<h3 class="h5 mb-3">Contacts</h3>
+<a class="btn btn-success btn-sm mb-2"
+   href="{% url 'clients_suppliers:contact_add' party.pk %}">+ New Contact</a>
+
+<table class="table table-bordered">
+  <thead class="table-light">
+    <tr><th>Name</th><th>Position</th><th>Email</th><th>Actions</th></tr>
+  </thead>
+  <tbody>
+    {% for c in party.contacts.all %}
       <tr>
         <td>{{ c.name }}</td>
-        <td>{{ c.position }}</td>
+        <td>{{ c.position|default:"—" }}</td>
         <td>{{ c.email }}</td>
         <td>
-          <a href="{% url 'clients_suppliers:contact_edit' party.pk c.pk %}">Edit</a> |
-          <a href="{% url 'clients_suppliers:contact_delete' party.pk c.pk %}">Delete</a>
+          <a class="btn btn-sm btn-primary"
+             href="{% url 'clients_suppliers:contact_edit' party.pk c.pk %}">Edit</a>
+          <a class="btn btn-sm btn-danger"
+             href="{% url 'clients_suppliers:contact_delete' party.pk c.pk %}">Delete</a>
         </td>
       </tr>
-      {% empty %}
-      <tr><td colspan="4">No contacts.</td></tr>
-      {% endfor %}
-    </tbody>
-  </table>
-  <p><a href="{% url 'clients_suppliers:party_list' %}">&larr; Back to list</a></p>
+    {% empty %}
+      <tr><td colspan="4" class="text-center">No contacts.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
 {% endblock %}

@@ -1,16 +1,32 @@
-{% extends 'base/base.html' %}
-{% block title %}{% if form.instance.pk %}Edit Contact{% else %}New Contact{% endif %}{% endblock %}
+{% extends "base/base.html" %}
+{% block title %}
+  {% if form.instance.pk %}Edit Contact{% else %}New Contact{% endif %}
+{% endblock %}
+
 {% block content %}
-<h1>{% if form.instance.pk %}Edit Contact{% else %}New Contact{% endif %}</h1>
-<form method="post">{% csrf_token %}
-  {{ form.non_field_errors }}
-  {% for field in form.visible_fields %}
-    <div>
-      {{ field.label_tag }}
-      {{ field }}
-      {{ field.errors }}
-    </div>
-  {% endfor %}
-  <button type="submit">Save</button>
-</form>
+<div class="card">
+  <div class="card-body">
+    <h2 class="card-title mb-4">
+      {% if form.instance.pk %}Edit Contact{% else %}New Contact{% endif %}
+    </h2>
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+      {% for field in form.visible_fields %}
+        <div class="mb-3">
+          {{ field.label_tag(attrs={'class':'form-label'}) }}
+          {{ field.as_widget(attrs={
+               'class': 'form-control' + (field.errors and ' is-invalid' or '')
+          }) }}
+          {% for err in field.errors %}
+            <div class="invalid-feedback">{{ err }}</div>
+          {% endfor %}
+        </div>
+      {% endfor %}
+      <button class="btn btn-primary" type="submit">Save</button>
+      <a class="btn btn-secondary ms-2"
+         href="{% url 'clients_suppliers:party_detail' form.instance.party.pk %}">Cancel</a>
+    </form>
+  </div>
+</div>
 {% endblock %}
