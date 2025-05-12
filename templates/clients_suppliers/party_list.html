@@ -1,0 +1,25 @@
+{% extends 'base/base.html' %}
+{% block title %}Parties{% endblock %}
+{% block content %}
+<h1>Active Parties</h1>
+<table>
+  <thead>
+    <tr><th>Name</th><th>Type</th><th>CNPJ</th><th>Actions</th></tr>
+  </thead>
+  <tbody>
+    {% for p in parties %}
+    <tr>
+      <td><a href="{% url 'clients_suppliers:party_detail' p.pk %}">{{ p.name }}</a></td>
+      <td>{{ p.get_type_display }}</td>
+      <td>{{ p.cnpj }}</td>
+      <td>
+        <a href="{% url 'clients_suppliers:party_edit' p.pk %}">Edit</a> |
+        <a href="{% url 'clients_suppliers:party_delete' p.pk %}">Delete</a>
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="4">No parties found.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

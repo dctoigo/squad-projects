@@ -1,0 +1,21 @@
+body {
+  font-family: sans-serif;
+  line-height: 1.5;
+  margin: 2rem auto;
+  max-width: 800px;
+}
+nav a { margin-right: 1rem; text-decoration: none; }
+table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+th, td { padding: 0.5rem; border: 1px solid #ddd; }
+input.error, select.error, textarea.error {
+  border: 1px solid #c00;
+  background-color: #fee;
+}
+.pagination { list-style: none; display: flex; gap: 0.5rem; padding: 0; }
+.pagination li { display: inline; }
+.pagination a, .pagination span {
+  padding: 0.3rem 0.6rem;
+  border: 1px solid #ccc;
+  text-decoration: none;
+}
+.pagination .current { font-weight: bold; }

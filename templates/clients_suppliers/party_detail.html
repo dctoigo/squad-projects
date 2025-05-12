@@ -1,0 +1,32 @@
+{% extends 'base/base.html' %}
+{% block title %}{{ party.name }}{% endblock %}
+{% block content %}
+  <h1>{{ party.name }} ({{ party.get_type_display }})</h1>
+  <p><strong>Legal Name:</strong> {{ party.legal_name }}</p>
+  <p><strong>CNPJ:</strong> {{ party.cnpj }}</p>
+  <p><strong>Address:</strong> {{ party.address }}, {{ party.city }}/{{ party.state }}</p>
+  <p><strong>Billing Email:</strong> {{ party.billing_email }}</p>
+  <p><strong>Notes:</strong> {{ party.notes|default:"-" }}</p>
+  <hr>
+  <h2>Contacts</h2>
+  <a href="{% url 'clients_suppliers:contact_add' party.pk %}">+ New Contact</a>
+  <table>
+    <thead><tr><th>Name</th><th>Position</th><th>Email</th><th>Actions</th></tr></thead>
+    <tbody>
+      {% for c in party.contacts.all %}
+      <tr>
+        <td>{{ c.name }}</td>
+        <td>{{ c.position }}</td>
+        <td>{{ c.email }}</td>
+        <td>
+          <a href="{% url 'clients_suppliers:contact_edit' party.pk c.pk %}">Edit</a> |
+          <a href="{% url 'clients_suppliers:contact_delete' party.pk c.pk %}">Delete</a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="4">No contacts.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <p><a href="{% url 'clients_suppliers:party_list' %}">&larr; Back to list</a></p>
+{% endblock %}

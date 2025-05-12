@@ -1,0 +1,24 @@
+{% extends 'base/base.html' %}
+{% block title %}{% if form.instance.pk %}Edit Party{% else %}New Party{% endif %}{% endblock %}
+{% block content %}
+<h1>{% if form.instance.pk %}Edit Party{% else %}New Party{% endif %}</h1>
+<form method="post">{% csrf_token %}
+  {{ form.non_field_errors }}
+  {% for field in form.visible_fields %}
+    <div>
+      {{ field.label_tag }}
+      {{ field.as_widget(attrs={
+          'class': field.errors and 'error' or ''
+      }) }}
+      {% if field.errors %}
+        <ul class="errorlist">
+          {% for err in field.errors %}
+            <li>{{ err }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </div>
+  {% endfor %}
+  <button type="submit">Save</button>
+</form>
+{% endblock %}

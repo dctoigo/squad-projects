@@ -1,0 +1,10 @@
+{% extends 'base/base.html' %}
+{% block title %}Delete Contact{% endblock %}
+{% block content %}
+  <h1>Delete Contact</h1>
+  <p>Delete “{{ object.name }}” from {{ object.party.name }}?</p>
+  <form method="post">{% csrf_token %}
+    <button type="submit">Confirm</button>
+    <a href="{% url 'clients_suppliers:party_detail' object.party.pk %}">Cancel</a>
+  </form>
+{% endblock %}
