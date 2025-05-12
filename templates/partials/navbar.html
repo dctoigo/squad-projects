@@ -1,44 +1,65 @@
 {% load static %}
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container">
-      <!-- Logo / Brand -->
-      <a class="navbar-brand" href="{% url 'clients_suppliers:party_list' %}">
-        <!-- Se tiver uma imagem: <img src="{% static 'img/logo.png' %}" alt="Logo" height="30"> -->
-        TimeManager
-      </a>
+<nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+  <div class="container">
+    <!-- Brand / Logo -->
+    <a class="navbar-brand" href="{% url 'clients_suppliers:party_list' %}">
+      <img
+        src="{% static 'img/logo.png' %}"
+        alt="TimeManager"
+        height="30"
+        class="d-inline-block align-text-top"
+      >
+      TimeManager
+    </a>
 
-      <!-- Toggle mobile -->
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-              data-bs-target="#navbarNav" aria-controls="navbarNav"
-              aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+    <!-- Toggler para mobile -->
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#mainNav"
+      aria-controls="mainNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-      <!-- Menu usuário à direita -->
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <!-- Exemplo de usuário logado -->
+    <div class="collapse navbar-collapse" id="mainNav">
+      <ul class="navbar-nav ms-auto align-items-center">
+        {% if request.user.is_authenticated %}
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="userMenu" role="button"
-               data-bs-toggle="dropdown" aria-expanded="false">
-              {{ request.user.username|default:"Guest" }}
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              id="userMenu"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              <i class="bi bi-person-circle me-1"></i>
+              {{ request.user.get_full_name|default:request.user.username }}
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
-              {% if request.user.is_authenticated %}
-                <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li>
-                  <form method="post" action="{% url 'logout' %}">
-                    {% csrf_token %}
-                    <button class="dropdown-item" type="submit">Logout</button>
-                  </form>
-                </li>
-              {% else %}
-                <li><a class="dropdown-item" href="{% url 'login' %}">Login</a></li>
-              {% endif %}
+              <li><a class="dropdown-item" href="{% url 'manager:profile' %}">Profile</a></li>
+              <li><a class="dropdown-item" href="{% url 'manager:password_change' %}">Change Password</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li>
+                <form method="post" action="{% url 'manager:logout' %}">
+                  {% csrf_token %}
+                  <button class="dropdown-item" type="submit">Logout</button>
+                </form>
+              </li>
             </ul>
           </li>
-        </ul>
-      </div>
+        {% else %}
+          <li class="nav-item">
+            <a class="nav-link d-flex align-items-center" href="{% url 'manager:login' %}">
+              <i class="bi bi-box-arrow-in-right me-1"></i> Login
+            </a>
+          </li>
+        {% endif %}
+      </ul>
     </div>
-  </nav>
+  </div>
+</nav>

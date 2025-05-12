@@ -43,7 +43,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'widget_tweaks',
+
+    # 'apps.manager.apps.ManagerConfig',
+
     # Apps do Projeto
+    'apps.manager',
     'apps.clients_suppliers',
     'apps.contracts',
     'apps.finance',
@@ -132,6 +137,10 @@ USE_I18N = True
 
 USE_TZ = True
 
+
+LOGIN_URL = 'manager:login'
+LLOGIN_REDIRECT_URL = 'clients_suppliers:client_list'
+LOGOUT_REDIRECT_URL = 'manager:login'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
