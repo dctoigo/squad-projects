@@ -1,4 +1,5 @@
 from django.urls import reverse_lazy, reverse
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.views.generic import (
     ListView, DetailView,
     CreateView, UpdateView, DeleteView
@@ -7,7 +8,7 @@ from .models import Party, Contact
 
 # — Party Views —
 
-class PartyListView(ListView):
+class PartyListView(LoginRequiredMixin, ListView):
     model = Party
     context_object_name = 'parties'
     template_name = 'clients_suppliers/party_list.html'
@@ -18,7 +19,7 @@ class PartyDetailView(DetailView):
     context_object_name = 'party'
     template_name = 'clients_suppliers/party_detail.html'
 
-class PartyCreateView(CreateView):
+class PartyCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = Party
     fields = [
         'name','legal_name','type','is_active','cnpj',
@@ -27,7 +28,7 @@ class PartyCreateView(CreateView):
     template_name = 'clients_suppliers/party_form.html'
     success_url = reverse_lazy('clients_suppliers:party_list')
 
-class PartyUpdateView(UpdateView):
+class PartyUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Party
     fields = [
         'name','legal_name','type','is_active','cnpj',
@@ -36,7 +37,7 @@ class PartyUpdateView(UpdateView):
     template_name = 'clients_suppliers/party_form.html'
     success_url = reverse_lazy('clients_suppliers:party_list')
 
-class PartyDeleteView(DeleteView):
+class PartyDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = Party
     template_name = 'clients_suppliers/party_confirm_delete.html'
     success_url = reverse_lazy('clients_suppliers:party_list')
