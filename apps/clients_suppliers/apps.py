@@ -3,4 +3,4 @@ from django.apps import AppConfig
 
 class ClientsSuppliersConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'clients_suppliers'
+    name = 'apps.clients_suppliers'
