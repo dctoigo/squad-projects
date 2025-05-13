@@ -1,0 +1,23 @@
+{% extends 'base/base.html' %}
+{% block title %}Contract {{ contract.code }}{% endblock %}
+{% block content %}
+<div class="card mb-4">
+  <div class="card-body">
+    <h2 class="card-title">{{ contract.code }} for {{ contract.client.name }}</h2>
+    <dl class="row">
+      <dt class="col-sm-3">Start Date</dt><dd class="col-sm-9">{{ contract.start_date }}</dd>
+      <dt class="col-sm-3">Due Date</dt><dd class="col-sm-9">{{ contract.due_date|default:'–' }}</dd>
+      <dt class="col-sm-3">Billing Type</dt><dd class="col-sm-9">{{ contract.get_billing_type_display }}</dd>
+      <dt class="col-sm-3">Payment Interval</dt><dd class="col-sm-9">{{ contract.get_payment_interval_display }}</dd>
+      <dt class="col-sm-3">Technologies</dt><dd class="col-sm-9">{{ contract.technologies.all|join:", " }}</dd>
+      <dt class="col-sm-3">Service Types</dt><dd class="col-sm-9">{{ contract.service_types.all|join:", " }}</dd>
+      <dt class="col-sm-3">Scope</dt><dd class="col-sm-9" style="white-space: pre-wrap;">{{ contract.scope }}</dd>
+      <dt class="col-sm-3">Milestones</dt><dd class="col-sm-9" style="white-space: pre-wrap;">{{ contract.milestones|default:'–' }}</dd>
+    </dl>
+    <div class="mt-3">
+      <a class="btn btn-primary" href="{% url 'contracts:contract_edit' contract.pk %}">Edit</a>
+      <a class="btn btn-secondary ms-2" href="{% url 'contracts:contract_list' %}">Back to list</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

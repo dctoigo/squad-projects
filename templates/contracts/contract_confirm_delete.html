@@ -1,0 +1,13 @@
+{% extends 'base/base.html' %}
+{% block title %}Delete Contract{% endblock %}
+{% block content %}
+<div class="alert alert-danger">
+  <h4 class="alert-heading">Delete Contract</h4>
+  <p>Are you sure you want to delete contract <strong>{{ object.code }}</strong>?</p>
+  <form method="post">
+    {% csrf_token %}
+    <button class="btn btn-danger" type="submit">Confirm</button>
+    <a class="btn btn-secondary ms-2" href="{% url 'contracts:contract_list' %}">Cancel</a>
+  </form>
+</div>
+{% endblock %}
