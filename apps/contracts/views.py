@@ -1,7 +1,7 @@
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Contract
-
+from .forms import ContractForm
 class ContractListView(ListView):
     model = Contract
     template_name = 'contracts/contract_list.html'
@@ -19,23 +19,25 @@ class ContractDetailView(DetailView):
 
 class ContractCreateView(CreateView):
     model = Contract
-    fields = [
-        'client','start_date','due_date',
-        'billing_type','payment_interval',
-        'technologies','service_types',
-        'scope','milestones'
-    ]
+    form_class = ContractForm
+    # fields = [
+    #     'client','start_date','due_date',
+    #     'billing_type','payment_interval',
+    #     'technologies','service_types',
+    #     'scope','milestones'
+    # ]
     template_name = 'contracts/contract_form.html'
     success_url = reverse_lazy('contracts:contract_list')
 
 class ContractUpdateView(UpdateView):
     model = Contract
-    fields = [
-        'client','start_date','due_date',
-        'billing_type','payment_interval',
-        'technologies','service_types',
-        'scope','milestones'
-    ]
+    form_class = ContractForm
+    # fields = [
+    #     'client','start_date','due_date',
+    #     'billing_type','payment_interval',
+    #     'technologies','service_types',
+    #     'scope','milestones'
+    # ]
     template_name = 'contracts/contract_form.html'
     success_url = reverse_lazy('contracts:contract_list')
 

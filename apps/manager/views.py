@@ -1,14 +1,245 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import UpdateView
+from django.views.generic import UpdateView, CreateView, TemplateView
 from django.urls import reverse_lazy
+from django.http import HttpResponse
 from django.contrib.auth.models import User
-from .forms import ProfileForm
+from django.template.loader import render_to_string
 
+from .mixins import HTMXModalMixin
+from .models import BillingType, PaymentInterval, ServiceType, Technology
+from .forms import BillingTypeForm, PaymentIntervalForm, ServiceTypeForm, TechnologyForm
+from apps.clients_suppliers.models import Party
+from apps.clients_suppliers.forms import PartyForm
+
+import json
+
+
+class DashboardView(LoginRequiredMixin, TemplateView):
+    template_name = 'manager/dashboard.html'
+
+
+# — Profile View —
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     model = User
-    form_class = ProfileForm
+    fields = ['first_name','last_name','email']
     template_name = 'manager/profile.html'
     success_url = reverse_lazy('manager:profile')
 
     def get_object(self):
         return self.request.user
+
+
+# — Lookup Modal Views —
+class BillingTypeCreateModalView(HTMXModalMixin, CreateView):
+    model = BillingType
+    form_class = BillingTypeForm
+    template_name = 'manager/modals/add_option_form.html'
+    modal_title = 'Add Billing Type'
+    lookup_field = 'billing_type'
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['title'] = self.modal_title
+        return ctx
+
+
+    def form_valid(self, form):
+        new = form.save()
+        html = render_to_string('manager/partials/option_oob.html',
+            {
+            'new': new,
+            'select_id': f'id_{self.lookup_field}'
+            }
+        )
+        # response = HttpResponse(html)
+        response = HttpResponse(html, status=204)
+        response['HX-Trigger'] = json.dumps({
+            "closeModal": None,
+            "refreshBillingType": None
+        })
+
+        # response['HX-Trigger'] = 'closeModal'
+        return response
+    
+    def get_lookup_field(self):
+        return self.lookup_field
+
+    def get_oob_template(self):
+        return 'manager/partials/option_oob.html'
+
+
+def billingtype_select_options(request):
+    options = BillingType.objects.all()
+    html = render_to_string("manager/partials/select_options.html", {"options": options})
+    return HttpResponse(html)
+
+
+class PaymentIntervalCreateModalView( CreateView):
+    model = PaymentInterval
+    form_class = PaymentIntervalForm
+    template_name = 'manager/modals/add_option_form.html'
+    modal_title = 'Add Payment Interval'
+    lookup_field = 'payment_interval'
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['title'] = self.modal_title
+        return ctx
+
+    def form_valid(self, form):
+        new = form.save()
+        html = render_to_string('manager/partials/option_oob.html',
+            {
+            'new': new,
+            'select_id': f'id_{self.lookup_field}'
+            }
+        )
+        # response = HttpResponse(html)
+        response = HttpResponse(html, status=204)
+        response['HX-Trigger'] = json.dumps({
+            "closeModal": None,
+            "refreshPaymentInterval": None
+        })
+
+        # response['HX-Trigger'] = 'closeModal'
+        return response
+    
+    def get_lookup_field(self):
+        return self.lookup_field
+
+    def get_oob_template(self):
+        return 'manager/partials/option_oob.html'
+
+
+def paymentinterval_select_options(request):
+    options = PaymentInterval.objects.all()
+    html = render_to_string("manager/partials/select_options.html", {"options": options})
+    return HttpResponse(html)
+
+
+class ServiceTypeCreateModalView(HTMXModalMixin, CreateView):
+    model = ServiceType
+    form_class = ServiceTypeForm
+    template_name = 'manager/modals/add_option_form.html'
+    modal_title = 'Add Service Type'
+    lookup_field = 'service_types'
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['title'] = self.modal_title
+        return ctx
+
+    def form_valid(self, form):
+        new = form.save()
+        html = render_to_string('manager/partials/option_oob.html',
+            {
+            'new': new,
+            'select_id': f'id_{self.lookup_field}'
+            }
+        )
+        # response = HttpResponse(html)
+        response = HttpResponse(html, status=204)
+        response['HX-Trigger'] = json.dumps({
+            "closeModal": None,
+            "refreshServiceType": None
+        })
+
+        # response['HX-Trigger'] = 'closeModal'
+        return response
+    
+    def get_lookup_field(self):
+        return self.lookup_field
+
+    def get_oob_template(self):
+        return 'manager/partials/option_oob.html'
+
+
+def servicetype_select_options(request):
+    options = ServiceType.objects.all()
+    html = render_to_string("manager/partials/select_options.html", {"options": options})
+    return HttpResponse(html)
+
+
+class TechnologyCreateModalView(HTMXModalMixin, CreateView):
+    model = Technology
+    form_class = TechnologyForm
+    template_name = 'manager/modals/add_option_form.html'
+    modal_title = 'Add Technology'
+    lookup_field = 'technology'
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['title'] = self.modal_title
+        return ctx
+
+    def form_valid(self, form):
+        new = form.save()
+        html = render_to_string('manager/partials/option_oob.html',
+            {
+            'new': new,
+            'select_id': f'id_{self.lookup_field}'
+            }
+        )
+        # response = HttpResponse(html)
+        response = HttpResponse(html, status=204)
+        response['HX-Trigger'] = json.dumps({
+            "closeModal": None,
+            "refreshTechnology": None
+        })
+
+        # response['HX-Trigger'] = 'closeModal'
+        return response
+    
+    def get_lookup_field(self):
+        return self.lookup_field
+
+    def get_oob_template(self):
+        return 'manager/partials/option_oob.html'
+
+
+def technology_select_options(request):
+    options = Technology.objects.all()
+    html = render_to_string("manager/partials/select_options.html", {"options": options})
+    return HttpResponse(html)
+
+
+class PartyCreateModalView(HTMXModalMixin, CreateView):
+    model = Party
+    form_class = PartyForm
+    template_name = 'manager/modals/add_option_form.html'
+    modal_title = 'Add Party'
+    lookup_field = 'client'
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['title'] = self.modal_title
+        return ctx
+
+    def form_valid(self, form):
+        new = form.save()
+        html = render_to_string('manager/partials/option_oob.html',
+            {
+            'new': new,
+            'select_id': f'id_{self.lookup_field}'
+            }
+        )
+        # response = HttpResponse(html)
+        response = HttpResponse(html, status=204)
+        response['HX-Trigger'] = json.dumps({
+            "closeModal": None,
+            "refreshParty": None
+        })
+
+        # response['HX-Trigger'] = 'closeModal'
+        return response
+    
+    def get_lookup_field(self):
+        return self.lookup_field
+
+    def get_oob_template(self):
+        return 'manager/partials/option_oob.html'
+    
+def party_select_options(request):
+    options = Party.objects.all()
+    html = render_to_string("manager/partials/select_options.html", {"options": options})
+    return HttpResponse(html)

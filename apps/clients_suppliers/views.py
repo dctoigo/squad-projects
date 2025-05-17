@@ -19,7 +19,7 @@ class PartyDetailView(DetailView):
     context_object_name = 'party'
     template_name = 'clients_suppliers/party_detail.html'
 
-class PartyCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+class PartyCreateView(LoginRequiredMixin, CreateView):
     model = Party
     fields = [
         'name','legal_name','type','is_active','cnpj',
@@ -28,7 +28,7 @@ class PartyCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     template_name = 'clients_suppliers/party_form.html'
     success_url = reverse_lazy('clients_suppliers:party_list')
 
-class PartyUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+class PartyUpdateView(LoginRequiredMixin, UpdateView):
     model = Party
     fields = [
         'name','legal_name','type','is_active','cnpj',
@@ -37,7 +37,7 @@ class PartyUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     template_name = 'clients_suppliers/party_form.html'
     success_url = reverse_lazy('clients_suppliers:party_list')
 
-class PartyDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+class PartyDeleteView(LoginRequiredMixin, DeleteView):
     model = Party
     template_name = 'clients_suppliers/party_confirm_delete.html'
     success_url = reverse_lazy('clients_suppliers:party_list')

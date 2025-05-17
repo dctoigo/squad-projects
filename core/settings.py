@@ -96,14 +96,15 @@ WSGI_APPLICATION = 'core.wsgi.application'
 tmpPostgres = urlparse(os.getenv("DATABASE_URL_PGSQL"))
 
 DATABASES = {
-     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': tmpPostgres.path.replace('/', ''),
-        'USER': tmpPostgres.username,
-        'PASSWORD': tmpPostgres.password,
-        'HOST': tmpPostgres.hostname,
-        'PORT': 5432,
-    }
+    #  'default': {
+    #     'ENGINE': 'django.db.backends.postgresql',
+    #     'NAME': tmpPostgres.path.replace('/', ''),
+    #     'USER': tmpPostgres.username,
+    #     'PASSWORD': tmpPostgres.password,
+    #     'HOST': tmpPostgres.hostname,
+    #     'PORT': 5432,
+    # }
+        'default': env.db_url("DATABASE_URL_PGSQL")
 }
 
 

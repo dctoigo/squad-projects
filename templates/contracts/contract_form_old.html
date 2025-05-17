@@ -1,0 +1,188 @@
+{% extends 'base/base.html' %}
+{% load form_helpers custom_filters %}
+
+{% block title %}
+  {{ form.instance.pk|yesno:"Edit Contract,New Contract" }}
+{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm">
+  <div class="card-body">
+    <h2 class="card-title mb-4">
+      {{ form.instance.pk|yesno:"Edit Contract,New Contract" }}
+    </h2>
+
+    {# — Form principal NÃO usa HTMX — #}
+    <form method="post" action="{% url 'contracts:contract_add' %}">
+      {% csrf_token %}
+
+      {# CLIENT #}
+      <div class="mb-3">
+        <label for="{{ form.client.id_for_label }}" class="form-label">
+          {{ form.client.label }}
+        </label>
+        <div class="input-group">
+          <select 
+            name="client"
+            id="id_client"
+            class="form-select"
+            hx-get="{% url 'manager:party_select_options' %}"
+            hx-trigger="refreshParty from:body"
+            hx-target="#id_client"
+            hx-swap="innerHTML">
+            {% for obj in form.fields.client.queryset %}
+              <option value="{{ obj.pk }}" {% if form.instance.client == obj %}selected{% endif %}>{{ obj }}</option>
+            {% endfor %}
+          </select>
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            hx-get="{% url 'manager:party_add_modal' %}"
+            hx-target="#dialog"
+            data-bs-toggle="modal"
+            data-bs-target="#modal"
+          >
+            <i class="bi bi-plus"></i>
+          </button>
+        </div>
+      </div>
+
+      {# BILLING TYPE #}
+      <div class="mb-3">
+        <label for="{{ form.billing_type.id_for_label }}" class="form-label">
+          {{ form.billing_type.label }}
+        </label>
+        <div class="input-group">
+          <select 
+            name="billing_type"
+            id="id_billing_type"
+            class="form-select"
+            hx-get="{% url 'manager:billingtype_select_options' %}"
+            hx-trigger="refreshBillingType from:body"
+            hx-target="#id_billing_type"
+            hx-swap="innerHTML">
+            {% for obj in form.fields.billing_type.queryset %}
+              <option value="{{ obj.pk }}" {% if form.instance.billing_type == obj %}selected{% endif %}>{{ obj }}</option>
+            {% endfor %}
+          </select>
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            hx-get="{% url 'manager:billingtype_add_modal' %}"
+            hx-target="#dialog"
+          >
+            <i class="bi bi-plus"></i>
+          </button>
+        </div>
+      </div>
+
+      {# PAYMENT INTERVAL #}
+      <div class="mb-3">
+        <label for="{{ form.payment_interval.id_for_label }}" class="form-label">
+          {{ form.payment_interval.label }}
+        </label>
+        <div class="input-group">
+          <select 
+            name="payment_interval"
+            id="id_payment_interval"
+            class="form-select"
+            hx-get="{% url 'manager:paymentinterval_select_options' %}"
+            hx-trigger="refreshPaymentInterval from:body"
+            hx-target="#id_payment_interval"
+            hx-swap="innerHTML">
+            {% for obj in form.fields.payment_interval.queryset %}
+              <option value="{{ obj.pk }}" {% if form.instance.payment_interval == obj %}selected{% endif %}>{{ obj }}</option>
+            {% endfor %}
+          </select>
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            hx-get="{% url 'manager:paymentinterval_add_modal' %}"
+            hx-target="#dialog"
+          >
+            <i class="bi bi-plus"></i>
+          </button>
+        </div>
+      </div>
+
+      {# TECHNOLOGIES (M2M) #}
+      <div class="mb-3">
+        <label for="{{ form.technologies.id_for_label }}" class="form-label">
+          {{ form.technologies.label }}
+        </label>
+        <div class="input-group">
+          <select 
+            name="technologies"
+            id="id_technologies"
+            class="form-select"
+            multiple
+            hx-get="{% url 'manager:technology_select_options' %}"
+            hx-trigger="refreshTechnology from:body"
+            hx-target="#id_technologies"
+            hx-swap="innerHTML"
+            size="6"
+          >
+            {% for obj in form.fields.technologies.queryset %}
+              <option value="{{ obj.pk }}" {% if obj in form.initial.technologies %}selected{% endif %}>{{ obj }}</option>
+            {% endfor %}
+          </select>
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            hx-get="{% url 'manager:technology_add_modal' %}"
+            hx-target="#dialog"
+          >
+            <i class="bi bi-plus"></i>
+          </button>
+        </div>
+      </div>
+
+      {# SERVICE TYPES (M2M) #}
+      <div class="mb-3">
+        <label for="{{ form.service_types.id_for_label }}" class="form-label">
+          {{ form.service_types.label }}
+        </label>
+        <div class="input-group">
+          <select 
+            name="service_types"
+            id="id_service_types"
+            class="form-select"
+            multiple
+            hx-get="{% url 'manager:servicetype_select_options' %}"
+            hx-trigger="refreshServiceType from:body"
+            hx-target="#id_service_types"
+            hx-swap="innerHTML"
+            size="6"
+          >
+            {% for obj in form.fields.service_types.queryset %}
+              <option value="{{ obj.pk }}" {% if obj in form.initial.service_types %}selected{% endif %}>
+                {{ obj }}
+              </option>
+            {% endfor %}
+          </select>
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            hx-get="{% url 'manager:servicetype_add_modal' %}"
+            hx-target="#dialog"
+          >
+            <i class="bi bi-plus"></i>
+          </button>
+        </div>
+      </div>
+      {# TODOS OS DEMAIS CAMPOS #}
+      {% for field in form.visible_fields %}
+        {% if field.name|not_in:"client,billing_type,payment_interval,technologies,service_types" %}
+              {% render_field field %}
+        {% endif %}
+      {% endfor %}
+
+      <button class="btn btn-primary">Save</button>
+      <a class="btn btn-secondary ms-2" href="{% url 'contracts:contract_list' %}">Cancel</a>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+
+

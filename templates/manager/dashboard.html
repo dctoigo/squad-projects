@@ -1,0 +1,36 @@
+{% extends 'base/base.html' %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Dashboard</h1>
+
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+  
+  <!-- Clientes e Fornecedores -->
+  <div class="col">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        <h5 class="card-title">Clientes & Fornecedores</h5>
+        <p class="card-text">Gerencie seus parceiros de negócio.</p>
+        <a href="{% url 'clients_suppliers:party_list' %}" class="btn btn-outline-primary">
+          Acessar
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contratos -->
+  <div class="col">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        <h5 class="card-title">Contratos</h5>
+        <p class="card-text">Cadastre e acompanhe os contratos firmados.</p>
+        <a href="{% url 'contracts:contract_list' %}" class="btn btn-outline-primary">
+          Acessar
+        </a>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

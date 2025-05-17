@@ -1,18 +1,23 @@
 {% load static %}
 <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
-  <div class="container">
-    <!-- Brand / Logo -->
-    <a class="navbar-brand" href="{% url 'clients_suppliers:party_list' %}">
-      <img
-        src="{% static 'img/logo.png' %}"
-        alt="TimeManager"
-        height="30"
-        class="d-inline-block align-text-top"
-      >
-      TimeManager
-    </a>
+  <div class="container d-flex justify-content-between align-items-center">
 
-    <!-- Toggler para mobile -->
+    <!-- Ícone + Título -->
+    <div class="d-flex align-items-center">
+      <!-- Ícone: usa logo se existir, senão ícone bootstrap -->
+        <a href="{% url 'dashboard' %}" class="me-2">
+          {% if logo_exists %}
+            <img src="{% static 'img/logo.png' %}" alt="Home" height="30">
+          {% else %}
+            <i class="bi bi-house-door-fill fs-4 text-primary"></i>
+          {% endif %}
+        </a>
+      <div class="fw-bold fs-5">
+        <a class="navbar-brand mb-0" href="{% url 'dashboard' %}">TimeManager</a>
+      </div>
+    </div>
+
+    <!-- Toggler (mobile) -->
     <button
       class="navbar-toggler"
       type="button"
@@ -25,41 +30,44 @@
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="collapse navbar-collapse" id="mainNav">
-      <ul class="navbar-nav ms-auto align-items-center">
-        {% if request.user.is_authenticated %}
-          <li class="nav-item dropdown">
-            <a
-              class="nav-link dropdown-toggle"
-              href="#"
-              id="userMenu"
-              role="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              <i class="bi bi-person-circle me-1"></i>
-              {{ request.user.get_full_name|default:request.user.username }}
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
-              <li><a class="dropdown-item" href="{% url 'manager:profile' %}">Profile</a></li>
-              <li><a class="dropdown-item" href="{% url 'manager:password_change' %}">Change Password</a></li>
-              <li><hr class="dropdown-divider"></li>
-              <li>
-                <form method="post" action="{% url 'manager:logout' %}">
-                  {% csrf_token %}
-                  <button class="dropdown-item" type="submit">Logout</button>
-                </form>
-              </li>
-            </ul>
-          </li>
-        {% else %}
-          <li class="nav-item">
-            <a class="nav-link d-flex align-items-center" href="{% url 'manager:login' %}">
-              <i class="bi bi-box-arrow-in-right me-1"></i> Login
-            </a>
-          </li>
-        {% endif %}
-      </ul>
+    <!-- Menu do Usuário -->
+    <div class="collapse navbar-collapse justify-content-end" id="mainNav">
+      <div class="d-flex align-items-center">
+        <ul class="navbar-nav align-items-center">
+          {% if request.user.is_authenticated %}
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="userMenu"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                <i class="bi bi-person-circle me-1"></i>
+                {{ request.user.get_full_name|default:request.user.username }}
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
+                <li><a class="dropdown-item" href="{% url 'manager:profile' %}">Profile</a></li>
+                <li><a class="dropdown-item" href="{% url 'manager:password_change' %}">Change Password</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                  <form method="post" action="{% url 'manager:logout' %}">
+                    {% csrf_token %}
+                    <button class="dropdown-item" type="submit">Logout</button>
+                  </form>
+                </li>
+              </ul>
+            </li>
+          {% else %}
+            <li class="nav-item">
+              <a class="nav-link d-flex align-items-center" href="{% url 'manager:login' %}">
+                <i class="bi bi-box-arrow-in-right me-1"></i> Login
+              </a>
+            </li>
+          {% endif %}
+        </ul>
+      </div>
     </div>
   </div>
 </nav>

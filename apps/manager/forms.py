@@ -1,7 +1,23 @@
 from django import forms
-from django.contrib.auth.models import User
+from .models import BillingType, PaymentInterval, ServiceType, Technology
+# Note: PartyForm stays in clients_suppliers/forms.py
 
-class ProfileForm(forms.ModelForm):
+class BillingTypeForm(forms.ModelForm):
     class Meta:
-        model = User
-        fields = ['first_name', 'last_name', 'email']
+        model = BillingType
+        fields = ['name']
+
+class PaymentIntervalForm(forms.ModelForm):
+    class Meta:
+        model = PaymentInterval
+        fields = ['name']
+
+class ServiceTypeForm(forms.ModelForm):
+    class Meta:
+        model = ServiceType
+        fields = ['name']
+
+class TechnologyForm(forms.ModelForm):
+    class Meta:
+        model = Technology
+        fields = ['name']

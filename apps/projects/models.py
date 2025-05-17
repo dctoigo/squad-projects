@@ -10,7 +10,7 @@ class Project(models.Model):
         related_name='projects', null=True, blank=True
     )
     client = models.ForeignKey(
-        'apps.clients_suppliers.Party',
+        'clients_suppliers.Party',
         on_delete=models.PROTECT,
         related_name='projects',
         null=True, blank=True,

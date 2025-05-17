@@ -1,4 +1,6 @@
 {% extends "base/base.html" %}
+{% load form_helpers %}
+
 {% block title %}
   {% if form.instance.pk %}Edit Party{% else %}New Party{% endif %}
 {% endblock %}
@@ -13,15 +15,7 @@
       {% csrf_token %}
       {{ form.non_field_errors }}
       {% for field in form.visible_fields %}
-        <div class="mb-3">
-          {{ field.label_tag(attrs={'class':'form-label'}) }}
-          {{ field.as_widget(attrs={
-               'class': 'form-control' + (field.errors and ' is-invalid' or '')
-          }) }}
-          {% for err in field.errors %}
-            <div class="invalid-feedback">{{ err }}</div>
-          {% endfor %}
-        </div>
+        {% render_field field %}
       {% endfor %}
       <button class="btn btn-primary" type="submit">Save</button>
       <a class="btn btn-secondary ms-2" href="{% url 'clients_suppliers:party_list' %}">Cancel</a>

@@ -1,20 +1,42 @@
 {% extends 'base/base.html' %}
-{% block title %}{% if form.instance.pk %}Edit Contract{% else %}New Contract{% endif %}{% endblock %}
+{% load form_helpers custom_filters %}
+
+{% block title %}
+  {{ form.instance.pk|yesno:"Edit Contract,New Contract" }}
+{% endblock %}
+
 {% block content %}
 <div class="card shadow-sm">
   <div class="card-body">
-    <h2 class="card-title mb-4">{% if form.instance.pk %}Edit Contract{% else %}New Contract{% endif %}</h2>
-    <form method="post">
+    <h2 class="card-title mb-4">
+      {{ form.instance.pk|yesno:"Edit Contract,New Contract" }}
+    </h2>
+
+    <form method="post" action="{% url 'contracts:contract_add' %}">
       {% csrf_token %}
+
+      {# CLIENT (Party) #}
+      {% include "manager/partials/htmx_select.html" with field=form.client url='manager:party_select_options' trigger="refreshParty" modal_url='manager:party_add_modal' %}
+
+      {# BILLING TYPE #}
+      {% include "manager/partials/htmx_select.html" with field=form.billing_type url='manager:billingtype_select_options' trigger="refreshBillingType" modal_url='manager:billingtype_add_modal' %}
+
+      {# PAYMENT INTERVAL #}
+      {% include "manager/partials/htmx_select.html" with field=form.payment_interval url='manager:paymentinterval_select_options' trigger="refreshPaymentInterval" modal_url='manager:paymentinterval_add_modal' %}
+
+      {# TECHNOLOGIES (M2M) #}
+      {% include "manager/partials/htmx_select.html" with field=form.technologies url='manager:technology_select_options' trigger="refreshTechnology" modal_url='manager:technology_add_modal' %}
+
+      {# SERVICE TYPES (M2M) #}
+      {% include "manager/partials/htmx_select.html" with field=form.service_types url='manager:servicetype_select_options' trigger="refreshServiceType" modal_url='manager:servicetype_add_modal' %}
+
+      {# DEMAIS CAMPOS #}
       {% for field in form.visible_fields %}
-        <div class="mb-3">
-          {{ field.label_tag(attrs={'class':'form-label'}) }}
-          {{ field.as_widget(attrs={'class':'form-control' + (field.errors and ' is-invalid' or '')}) }}
-          {% for err in field.errors %}
-            <div class="invalid-feedback">{{ err }}</div>
-          {% endfor %}
-        </div>
+        {% if field.name|not_in:"client,billing_type,payment_interval,technologies,service_types" %}
+          {% render_field field %}
+        {% endif %}
       {% endfor %}
+
       <button class="btn btn-primary">Save</button>
       <a class="btn btn-secondary ms-2" href="{% url 'contracts:contract_list' %}">Cancel</a>
     </form>
