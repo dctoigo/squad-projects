@@ -5,7 +5,7 @@ from .models import BillingType, PaymentInterval, ServiceType, Technology
 class BillingTypeForm(forms.ModelForm):
     class Meta:
         model = BillingType
-        fields = ['name']
+        fields = ['name','mode']
 
 class PaymentIntervalForm(forms.ModelForm):
     class Meta:

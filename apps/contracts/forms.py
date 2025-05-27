@@ -8,7 +8,7 @@ class ContractForm(forms.ModelForm):
         fields = [
             'client',
             'start_date', 'due_date',
-            'billing_type', 'payment_interval',
+            'billing_type', 'payment_interval', 'value',
             'technologies', 'service_types',
             'scope', 'milestones',
         ]

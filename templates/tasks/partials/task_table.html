@@ -1,0 +1,7 @@
+{% for task in tasks %}
+  {% include "tasks/partials/task_row.html" with task=task %}
+{% empty %}
+  <tr>
+    <td colspan="6" class="text-center text-muted">No tasks found.</td>
+  </tr>
+{% endfor %}

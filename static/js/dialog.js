@@ -15,6 +15,24 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       });
 
+      htmx.on("htmx:beforeRequest", (e) => {
+        const dialog = document.getElementById("dialog");
+        if (dialog && dialog.innerHTML.trim() === "") {
+          dialog.innerHTML = `
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Carregando...</h5>
+              </div>
+              <div class="modal-body text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+              </div>
+            </div>
+          `;
+        }
+      });
+
       document.body.addEventListener("htmx:closeModal", () => {
         bsModal.hide();
       });

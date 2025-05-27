@@ -1,0 +1,69 @@
+{% extends 'base/base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h1 class="mb-4">Project Dashboard</h1>
+
+{% for client, projects in grouped.items %}
+  <div class="card mb-4 shadow-sm">
+    <div class="card-header bg-light">
+      <strong>{{ client.name }}</strong>
+    </div>
+    <div class="card-body">
+      {% for project in projects %}
+        <h5 class="mb-3">{{ project.title }}</h5>
+
+        <div class="row">
+          <div class="col-md-6">
+            <h6>Tasks</h6>
+            <table class="table table-sm table-bordered">
+              <thead>
+                <tr>
+
+                  <th>Description</th>
+                  <th>Created</th>
+                  <th>Urgency</th>
+                  <th>Status</th>
+                  <th>Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for task in project.tasks.all %}
+                  <tr>
+                    <td><a href="{% url 'tasks:task_detail' task.pk %}">{{ task.description }}</a></td>
+                    <td>{{ task.created_at }}</td>
+                    <td>{{ task.get_urgency_display }}</td>
+                    <td>{{ task.get_status_display }}</td>
+                    <td>{{ task.elapsed_time_display }}</td>
+                  </tr>
+                {% empty %}
+                  <tr><td colspan="5" class="text-muted text-center">No tasks</td></tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <div class="col-md-6">
+            <h6>Time Sessions</h6>
+            <table class="table table-sm table-bordered">
+              <thead>
+                <tr><th>User</th><th>Started</th><th>Stopped</th></tr>
+              </thead>
+              <tbody>
+                {% for session in project.sessions %}
+                  <tr>
+                    <td>{{ session.user }}</td>
+                    <td>{{ session.started_at }}</td>
+                    <td>{{ session.stopped_at|default:"—" }}</td>
+                  </tr>
+                {% empty %}
+                  <tr><td colspan="3" class="text-muted text-center">No sessions</td></tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <hr>
+      {% endfor %}
+    </div>
+  </div>
+{% endfor %}
+{% endblock %}

@@ -22,6 +22,8 @@ class Contract(models.Model):
         PaymentInterval, on_delete=models.PROTECT, related_name='+'
     )
 
+    value = models.DecimalField('Value', max_digits=10, decimal_places=2, default=0)
+
     technologies  = models.ManyToManyField(Technology, blank=True)
     service_types = models.ManyToManyField(ServiceType, blank=True)
     scope         = models.TextField('Scope')

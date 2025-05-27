@@ -1,5 +1,5 @@
 {% extends 'base/base.html' %}
-{% load form_helpers %}
+{% load form_helpers custom_filters %}
 
 {% block title %}
   {% if form.instance.pk %}Edit Project{% else %}New Project{% endif %}
@@ -14,9 +14,43 @@
     <form method="post">
       {% csrf_token %}
       {{ form.non_field_errors }}
-      {% for field in form.visible_fields %}
-        {% render_field field %}
-      {% endfor %}
+
+      {# CONTRATO - apenas um select padrão #}
+      {% render_field form.contract %}
+
+      {# CLIENTE - usa HTMX apenas se contrato não for definido #}
+      {% if not form.instance.contract_id %}
+        {% include "manager/partials/htmx_select.html" with field=form.client url='manager:party_select_options' trigger="refreshParty" modal_url='manager:party_add_modal' %}
+      {% else %}
+        {% render_field form.client %}
+      {% endif %}
+
+      {# BILLING TYPE #}
+      {% if not form.instance.contract_id %}
+        {% include "manager/partials/htmx_select.html" with field=form.billing_type url='manager:billingtype_select_options' trigger="refreshBillingType" modal_url='manager:billingtype_add_modal' %}
+      {% else %}
+        {% render_field form.billing_type %}
+      {% endif %}
+
+      {# PAYMENT INTERVAL #}
+      {% if not form.instance.contract_id %}
+        {% include "manager/partials/htmx_select.html" with field=form.payment_interval url='manager:paymentinterval_select_options' trigger="refreshPaymentInterval" modal_url='manager:paymentinterval_add_modal' %}
+      {% else %}
+        {% render_field form.payment_interval %}
+      {% endif %}
+
+      {# RATE OR VALUE - comum, mas desabilita se herdado #}
+      {% render_field form.rate_or_value %}
+
+      {# DEMAIS CAMPOS #}
+      {% with exclude_fields="contract,client,billing_type,payment_interval,rate_or_value" %}
+        {% for field in form.visible_fields %}
+          {% if field.name not in exclude_fields|split:"," %}
+            {% render_field field %}
+          {% endif %}
+        {% endfor %}
+      {% endwith %}
+
       <button class="btn btn-primary">Save</button>
       <a class="btn btn-secondary ms-2" href="{% url 'projects:project_list' %}">Cancel</a>
     </form>

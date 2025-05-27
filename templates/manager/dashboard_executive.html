@@ -1,0 +1,113 @@
+{% extends 'base/base.html' %}
+{% block title %}Executive Dashboard{% endblock %}
+{% block content %}
+{% load custom_filters %}
+
+<div class="text-center mb-4">
+  <h2 class="text-primary">Executive Dashboard</h2>
+  <!--
+  <a href="#" class="btn btn-outline-primary mt-2">
+    <i class="bi bi-download me-1"></i>Download Time Report (CSV)
+  </a>
+  -->
+</div>
+
+<form method="get" class="row g-3 align-items-end mb-4">
+  <div class="col-md-3">
+    <label for="month" class="form-label">Mês</label>
+    <select class="form-select" id="month" name="month">
+      <option value="">Todos</option>
+      {% for i in 1|to_range:13 %}
+        <option value="{{ i }}" {% if request.GET.month == i|stringformat:"s" %}selected{% endif %}>
+          {{ i|date:"F" }}
+        </option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-3">
+    <label for="year" class="form-label">Ano</label>
+    <select class="form-select" id="year" name="year">
+      <option value="">Todos</option>
+      {% for y in years %}
+        <option value="{{ y }}" {% if request.GET.year == y|stringformat:"s" %}selected{% endif %}>{{ y }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-auto">
+    <button class="btn btn-primary" type="submit">Filtrar</button>
+    <a href="#" class="btn btn-outline-secondary ms-2">Limpar</a>
+  </div>
+</form>
+
+<div class="row g-4 text-center mb-4">
+  <div class="col-md-4">
+    <div class="card shadow-sm border-0 bg-light p-3">
+      <h6 class="text-muted">Total Hours Logged</h6>
+      <h2 class="text-success">{{ total_hours|floatformat:1 }}h</h2>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card shadow-sm border-0 bg-light p-3">
+      <h6 class="text-muted">Active Projects</h6>
+      <h2 class="text-primary">{{ active_projects }}</h2>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card shadow-sm border-0 bg-light p-3">
+      <h6 class="text-muted">Open Tasks</h6>
+      <h2 class="text-warning">{{ open_tasks }}</h2>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4 text-center mb-5">
+  <div class="col-md-6">
+    <div class="card border-0 shadow-sm p-3 bg-white">
+      <h6 class="text-muted">Completed Tasks</h6>
+      <h3 class="text-success">{{ completed_tasks }}</h3>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card border-0 shadow-sm p-3 bg-white">
+      <h6 class="text-muted">Ongoing Sessions</h6>
+      <h3 class="text-danger">{{ active_sessions }}</h3>
+    </div>
+  </div>
+</div>
+
+<div class="card border-0 shadow-sm p-4 mb-4">
+  <h5 class="text-center mb-4">⏱ Time Logged per Month</h5>
+  <canvas id="timeChart"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const labels = JSON.parse(document.getElementById("chart-labels").textContent);
+    const data = JSON.parse(document.getElementById("chart-data").textContent);
+
+    const ctx = document.getElementById("timeChart").getContext("2d");
+    new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: labels,
+        datasets: [{
+          label: "Hours",
+          data: data,
+          backgroundColor: "rgba(54, 162, 235, 0.6)",
+          borderColor: "rgba(54, 162, 235, 1)",
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  });
+</script>
+{% endblock %}

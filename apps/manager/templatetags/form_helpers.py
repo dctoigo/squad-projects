@@ -5,6 +5,8 @@ from django.forms.widgets import (
     CheckboxInput, Select, SelectMultiple, RadioSelect
 )
 
+from datetime import timedelta
+
 register = template.Library()
 
 @register.simple_tag
@@ -68,5 +70,10 @@ def is_multiple(field):
     return isinstance(field.field.widget, SelectMultiple)
 
 @register.filter
+def split(value, delimiter=','):
+    return value.split(delimiter)
+
+@register.filter
 def add_class(field, css_class):
     return field.as_widget(attrs={'class': css_class})
+

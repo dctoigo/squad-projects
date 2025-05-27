@@ -1,73 +1,100 @@
-{% load static %}
-<nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
-  <div class="container d-flex justify-content-between align-items-center">
+{% load static custom_filters %}
+<nav class="navbar shadow-sm mb-4 px-3" id="main-navbar" data-bs-theme="light">
+  <div class="container-fluid justify-content-between align-items-center">
 
-    <!-- Ícone + Título -->
-    <div class="d-flex align-items-center">
-      <!-- Ícone: usa logo se existir, senão ícone bootstrap -->
-        <a href="{% url 'dashboard' %}" class="me-2">
-          {% if logo_exists %}
-            <img src="{% static 'img/logo.png' %}" alt="Home" height="30">
-          {% else %}
-            <i class="bi bi-house-door-fill fs-4 text-primary"></i>
-          {% endif %}
-        </a>
-      <div class="fw-bold fs-5">
-        <a class="navbar-brand mb-0" href="{% url 'dashboard' %}">TimeManager</a>
-      </div>
-    </div>
-
-    <!-- Toggler (mobile) -->
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#mainNav"
-      aria-controls="mainNav"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-    >
-      <span class="navbar-toggler-icon"></span>
+    <!-- Botão do menu lateral -->
+    <button class="btn btn-outline-primary me-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNav" aria-controls="offcanvasNav">
+      <i class="bi bi-list fs-4"></i>
     </button>
 
-    <!-- Menu do Usuário -->
-    <div class="collapse navbar-collapse justify-content-end" id="mainNav">
-      <div class="d-flex align-items-center">
-        <ul class="navbar-nav align-items-center">
-          {% if request.user.is_authenticated %}
-            <li class="nav-item dropdown">
-              <a
-                class="nav-link dropdown-toggle"
-                href="#"
-                id="userMenu"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                <i class="bi bi-person-circle me-1"></i>
-                {{ request.user.get_full_name|default:request.user.username }}
-              </a>
-              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
-                <li><a class="dropdown-item" href="{% url 'manager:profile' %}">Profile</a></li>
-                <li><a class="dropdown-item" href="{% url 'manager:password_change' %}">Change Password</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li>
-                  <form method="post" action="{% url 'manager:logout' %}">
-                    {% csrf_token %}
-                    <button class="dropdown-item" type="submit">Logout</button>
-                  </form>
-                </li>
-              </ul>
+    <!-- Logo + Título -->
+    <a href="{% url 'dashboard' %}" class="navbar-brand d-flex align-items-center me-auto">
+      {% if logo_exists %}
+        <img src="{% static 'img/logo.png' %}" alt="Logo" height="30" class="me-2">
+      {% else %}
+        <i class="bi bi-house-door-fill fs-4 text-primary me-2"></i>
+      {% endif %}
+      <strong>TimeManager</strong>
+    </a>
+
+    <!-- Botões de Ações (Usuário + Tema) -->
+    <div class="d-flex align-items-center position-relative">
+      {% if request.user.is_authenticated %}
+        <div class="dropdown me-2">
+          <a class="btn btn-outline-secondary dropdown-toggle" href="#" role="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-person-circle me-1"></i>
+            {{ request.user.get_short_name|default:request.user.username }}
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+            <li><a class="dropdown-item" href="{% url 'manager:profile' %}">Perfil</a></li>
+            <li><a class="dropdown-item" href="{% url 'manager:password_change' %}">Alterar Senha</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <form method="post" action="{% url 'manager:logout' %}">
+                {% csrf_token %}
+                <button class="dropdown-item" type="submit">Sair</button>
+              </form>
             </li>
-          {% else %}
-            <li class="nav-item">
-              <a class="nav-link d-flex align-items-center" href="{% url 'manager:login' %}">
-                <i class="bi bi-box-arrow-in-right me-1"></i> Login
-              </a>
-            </li>
-          {% endif %}
-        </ul>
-      </div>
+          </ul>
+        </div>
+
+        <button id="themeToggle" class="btn btn-outline-secondary" title="Alternar tema">
+          <i id="themeIcon" class="bi"></i>
+        </button>
+      {% else %}
+        <a class="btn btn-outline-primary" href="{% url 'manager:login' %}">
+          <i class="bi bi-box-arrow-in-right me-1"></i> Login
+        </a>
+      {% endif %}
     </div>
   </div>
 </nav>
+
+<!-- Offcanvas Menu -->
+<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNav" aria-labelledby="offcanvasNavLabel">
+  <div class="offcanvas-header">
+    <h5 id="offcanvasNavLabel">Navegação</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Fechar"></button>
+  </div>
+  <div class="offcanvas-body">
+    <ul class="nav nav-pills flex-column">
+      
+      <li class="nav-item">
+        <a class="nav-link {% if request.path == '/dashboard/executive/' %}active{% endif %}" href="{% url 'manager:dashboard_executive' %}">
+          <i class="bi bi-graph-up"></i> Dashboard Excecutivo
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link {% if request.path|startswith:'/clients' %}active{% endif %}" href="{% url 'clients_suppliers:party_list' %}">
+          <i class="bi bi-building"></i> Clientes
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link {% if request.path|startswith:'/contracts' %}active{% endif %}" href="{% url 'contracts:contract_list' %}">
+          <i class="bi bi-file-earmark-text"></i> Contratos
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link {% if request.path|startswith:'/projects' %}active{% endif %}" href="{% url 'projects:project_list' %}">
+          <i class="bi bi-diagram-3"></i> Projetos
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link {% if request.path|startswith:'/tasks' %}active{% endif %}" href="{% url 'tasks:task_list' %}">
+          <i class="bi bi-list-task"></i> Tarefas
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link {% if request.path == '/dashboard/tasks/' %}active{% endif %}" href="{% url 'dashboard_tasks' %}">
+          <i class="bi bi-graph-up"></i> Dashboard Tarefas
+        </a>
+      </li>      
+
+    </ul>
+  </div>
+</div>

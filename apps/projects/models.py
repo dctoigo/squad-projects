@@ -1,10 +1,20 @@
 from django.db import models
 from apps.contracts.models import Contract
 from apps.manager.models import Technology, BillingType, PaymentInterval
+from datetime import timedelta
 
 class Project(models.Model):
+    STATUS_CHOICES = (
+        ('active', 'Active'),
+        ('inactive', 'Inactive'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled'),
+    )
     code = models.AutoField(primary_key=True)
     title = models.CharField('Title', max_length=255)
+    status = models.CharField(
+        'Status', max_length=16, choices=STATUS_CHOICES, default='active'
+    )
     contract = models.ForeignKey(
         Contract, on_delete=models.SET_NULL,
         related_name='projects', null=True, blank=True
@@ -48,3 +58,31 @@ class Project(models.Model):
 
     def __str__(self):
         return f"{self.title} ({self.contract.code if self.contract else self.client.name})"
+    
+    @property
+    def tasks_with_sessions(self):
+        """Base queryset with optimized joins"""
+        return self.tasks.select_related(
+            "responsible", "project"
+        ).prefetch_related('time_sessions')
+
+    @property
+    def exclude_closed(self):
+        """Returns active tasks"""
+        return self.tasks_with_sessions.exclude(
+            status='closed'
+        ).order_by('-created_at')
+    
+    @property
+    def closed(self):
+        """Returns closed tasks"""
+        return self.tasks_with_sessions.filter(
+            status='closed'
+        ).order_by('-closed_at')
+
+    def calculate_closed_duration(self):
+        """Calculate total duration for closed tasks"""
+        total = timedelta()
+        for task in self.closed:
+            total += task.elapsed_time
+        return total

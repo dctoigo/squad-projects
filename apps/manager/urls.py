@@ -11,6 +11,7 @@ from .views import (
     paymentinterval_select_options,
     servicetype_select_options,
     technology_select_options,
+    DashboardExecutiveView,
 )
 
 app_name = 'manager'
@@ -45,6 +46,9 @@ urlpatterns = [
 
     path('party/add/', PartyCreateModalView.as_view(), name='party_add_modal'),
     path('party/select-options/', PartyCreateModalView.as_view(), name='party_select_options'),
+
+    # Dashboard
+    path('dashboard/executive/', DashboardExecutiveView.as_view(), name='dashboard_executive'),
 
     # Dashboard
     # path('', DashboardView.as_view(), name='dashboard'),

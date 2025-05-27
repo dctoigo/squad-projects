@@ -1,0 +1,32 @@
+<tr id="task-{{ task.pk }}">
+  <td>{{ task.project.title }}</td>
+  <td>{{ task.description }}</td>
+  <td>{{ task.get_urgency_display }}</td>
+  <td>{{ task.get_status_display }}</td>
+  <td>{{ task.elapsed_time_display }}</td>
+  <td>
+    {% if task.can_start_or_stop %}
+      <button class="btn btn-sm btn-outline-secondary"
+              hx-post="{% url 'tasks:task_toggle_session' task.id %}"
+              hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+              hx-target="#task-{{ task.id }}"
+              hx-swap="outerHTML">
+            {% if task.active_session %}
+              ⏹ Stop
+            {% else %}
+              ▶ Start
+            {% endif %}
+      </button>
+    {% endif %}
+    
+    <div class="btn-group ms-2">
+      <button class="btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown">
+        Actions
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end">
+        <li><a class="dropdown-item" hx-get="{% url 'tasks:task_edit' task.pk %}" hx-target="#modal-body" data-bs-toggle="modal" data-bs-target="#mainModal">Edit</a></li>
+        <li><a class="dropdown-item text-danger" hx-delete="{% url 'tasks:task_delete' task.pk %}" hx-confirm="Are you sure?" hx-target="#task-{{ task.pk }}" hx-swap="outerHTML">Delete</a></li>
+      </ul>
+    </div>
+  </td>
+</tr>

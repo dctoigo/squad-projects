@@ -1,20 +1,62 @@
 {% extends 'base/base.html' %}
 {% block title %}Project {{ project.title }}{% endblock %}
+
 {% block content %}
 <div class="card mb-4">
   <div class="card-body">
     <h2 class="card-title">{{ project.title }}</h2>
     <dl class="row">
-      <dt class="col-sm-3">Client</dt><dd class="col-sm-9">{{ project.client.name }}</dd>
-      <dt class="col-sm-3">Contract</dt><dd class="col-sm-9">{{ project.contract.code if project.contract else '–' }}</dd>
-      <dt class="col-sm-3">Start Date</dt><dd class="col-sm-9">{{ project.start_date }}</dd>
-      <dt class="col-sm-3">Due Date</dt><dd class="col-sm-9">{{ project.due_date|default:'–' }}</dd>
-      <dt class="col-sm-3">Billing</dt><dd class="col-sm-9">{{ project.get_billing_type_display or '–' }} / {{ project.get_payment_interval_display or '–' }}</dd>
-      <dt class="col-sm-3">Rate/Value</dt><dd class="col-sm-9">{{ project.rate_or_value|default:'–' }}</dd>
-      <dt class="col-sm-3">Technologies</dt><dd class="col-sm-9">{{ project.technologies.all|join:", " }}</dd>
-      <dt class="col-sm-3">Scope</dt><dd class="col-sm-9" style="white-space: pre-wrap;">{{ project.scope }}</dd>
-      <dt class="col-sm-3">Main Contact</dt><dd class="col-sm-9">{{ project.main_contact }}</dd>
+      <dt class="col-sm-3">Client</dt>
+      <dd class="col-sm-9">{{ project.client.name }}</dd>
+
+      <dt class="col-sm-3">Contract</dt>
+      <dd class="col-sm-9">
+        {% if project.contract %}
+          <a href="{% url 'contracts:contract_detail' project.contract.pk %}">
+            {{ project.contract.code }}
+          </a>
+        {% else %}
+          <span class="text-muted">–</span>
+        {% endif %}
+      </dd>
+
+      <dt class="col-sm-3">Start Date</dt>
+      <dd class="col-sm-9">{{ project.start_date }}</dd>
+
+      <dt class="col-sm-3">Due Date</dt>
+      <dd class="col-sm-9">{{ project.due_date|default:"–" }}</dd>
+
+      <dt class="col-sm-3">Billing</dt>
+      <dd class="col-sm-9">
+        {% if project.billing_type and project.payment_interval %}
+          {{ project.billing_type }} / {{ project.payment_interval }}
+        {% else %}
+          <span class="text-muted">–</span>
+        {% endif %}
+      </dd>
+
+      <dt class="col-sm-3">Rate/Value</dt>
+      <dd class="col-sm-9">{{ project.rate_or_value|default:"–" }}</dd>
+
+      <dt class="col-sm-3">Technologies</dt>
+      <dd class="col-sm-9">
+        {% if project.technologies.exists %}
+          {{ project.technologies.all|join:", " }}
+        {% else %}
+          <span class="text-muted">–</span>
+        {% endif %}
+      </dd>
+
+      <dt class="col-sm-3">Scope</dt>
+      <dd class="col-sm-9" style="white-space: pre-wrap;">{{ project.scope }}</dd>
+
+      <dt class="col-sm-3">Status</dt>
+      <dd class="col-sm-9">{{ project.get_status_display }}</dd>
+
+      <dt class="col-sm-3">Main Contact</dt>
+      <dd class="col-sm-9">{{ project.main_contact|default:"–" }}</dd>
     </dl>
+
     <div class="mt-3">
       <a class="btn btn-primary" href="{% url 'projects:project_edit' project.pk %}">Edit</a>
       <a class="btn btn-secondary ms-2" href="{% url 'projects:project_list' %}">Back to list</a>

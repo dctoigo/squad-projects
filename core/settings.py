@@ -51,11 +51,8 @@ INSTALLED_APPS = [
     'apps.manager',
     'apps.clients_suppliers',
     'apps.contracts',
-    'apps.finance',
-    'apps.accounting',
-    'apps.integrations',
-    'apps.tasks',
     'apps.projects',
+    'apps.tasks',
 ]
 
 MIDDLEWARE = [

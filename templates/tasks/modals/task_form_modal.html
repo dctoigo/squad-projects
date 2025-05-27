@@ -1,0 +1,32 @@
+{% extends "base/modal.html" %}
+{% load form_helpers task_helpers %}
+
+{% block modal_title %}{{ title }}{% endblock %}
+
+{% block modal_body %}
+  <form hx-post="{{ request.path }}"
+        hx-target="#dialog"
+        hx-trigger="submit"
+        hx-swap="none"
+        class="modal-form">
+    {% csrf_token %}
+    
+    <div class="modal-body">
+      {% for field in form %}
+        {{ field|as_field }}
+      {% endfor %}
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" 
+              class="btn btn-secondary" 
+              data-bs-dismiss="modal">
+        Cancelar
+      </button>
+      <button type="submit" 
+              class="btn btn-primary">
+        {{ submit_label|default:"Salvar" }}
+      </button>
+    </div>
+  </form>
+{% endblock %}

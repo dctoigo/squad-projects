@@ -1,10 +1,11 @@
+
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}Time Manager{% endblock %}</title>
+  <title>{% block title %}Time and Projects Manager{% endblock %}</title>
 
   <!-- Bootswatch Flatly Theme (Bootstrap CSS) -->
   <link
@@ -14,9 +15,12 @@
   >
 
   <!-- Bootstrap Icons -->
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
-    rel="stylesheet"
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+  <link id="theme-dark" 
+    rel="stylesheet" 
+    href="https://cdn.jsdelivr.net/npm/bootstrap-dark-5@1.1.3/dist/css/bootstrap-night.min.css" 
+    disabled
   >
 
   <!-- Flatpickr CSS -->
@@ -43,10 +47,78 @@
     <div id="dialog" class="modal-dialog" hx-target="this"></div>
   </div>
 
+  <!-- Toast Container -->
+  <div class="toast-container position-fixed bottom-0 end-0 p-3">
+      {% for message in messages %}
+          <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+              <div class="toast-header {% if message.tags %}bg-{{ message.tags }}{% endif %}">
+                  <strong class="me-auto">Notification</strong>
+                  <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+              </div>
+              <div class="toast-body">
+                  {{ message }}
+              </div>
+          </div>
+      {% endfor %}
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://unpkg.com/htmx.org@1.9.2"></script>
 
   <script src="{% static 'js/dialog.js' %}"></script>
-  <script src="{% static 'js/toast.js' %}"></script>
+  <script src="{% static 'js/toast-manager.js' %}"></script>
+  <script src="{% static 'js/task-toggle.js' %}"></script>
+  
+  <!-- Initialize ToastManager -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      window.toastManager = new ToastManager();
+    });
+  </script>
+
+  <!-- Tema   -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const themeToggle = document.getElementById("themeToggle");
+      const themeIcon = document.getElementById("themeIcon");
+      const navbar = document.getElementById("main-navbar");
+      const offcanvas = document.getElementById("offcanvasNav");
+       function applyTheme() {
+        const isDark = localStorage.getItem("theme") === "dark";
+
+        // Define tema no <html>
+        document.documentElement.setAttribute("data-bs-theme", isDark ? "dark" : "light");
+
+        // Ajusta tema da navbar e do offcanvas
+        if (navbar) navbar.setAttribute("data-bs-theme", isDark ? "dark" : "light");
+        if (offcanvas) offcanvas.setAttribute("data-bs-theme", isDark ? "dark" : "light");
+
+        // Ícone de alternância
+        if (themeIcon) {
+          themeIcon.className = isDark ? "bi bi-sun-fill" : "bi bi-moon-stars-fill";
+        }
+      }
+
+      // Alterna tema ao clicar
+      themeToggle?.addEventListener("click", function () {
+        const current = localStorage.getItem("theme") === "dark";
+        localStorage.setItem("theme", current ? "light" : "dark");
+        applyTheme();
+      });
+
+      applyTheme(); // Aplica ao carregar
+    });
+  </script>
+
+  <script>
+    document.body.addEventListener('htmx:configRequest', (event) => {
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value ||
+                        document.querySelector('meta[name=csrf-token]')?.content;
+      if (csrfToken) {
+        event.detail.headers['X-CSRFToken'] = csrfToken;
+      }
+    });
+  </script>
+
 </body>
 </html>

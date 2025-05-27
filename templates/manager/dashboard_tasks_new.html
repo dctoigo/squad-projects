@@ -1,0 +1,133 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load form_helpers task_helpers %}
+
+{% block title %}Tasks Dashboard{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h1 class="h3 mb-4">Dashboard de Tarefas</h1>
+
+  <!-- Filtros -->
+  <form method="get" class="row g-3 align-items-end mb-4">
+    {% csrf_token %}
+    <div class="col-md-3">
+      <label class="form-label">Cliente</label>
+      <select name="client" class="form-select">
+        <option value="">Todos</option>
+        {% for c in clients %}
+          <option value="{{ c.id }}" {% if filter_client == c.id|stringformat:"s" %}selected{% endif %}>{{ c.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-3">
+      <label class="form-label">Status da Tarefa</label>
+      <select name="task_status" class="form-select">
+        <option value="">Todos</option>
+        {% for key, label in task_status_choices %}
+          <option value="{{ key }}" {% if filter_status == key %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-2">
+      <label class="form-label">De</label>
+      <input type="date" name="start" value="{{ filter_start }}" class="form-control">
+    </div>
+    <div class="col-md-2">
+      <label class="form-label">Até</label>
+      <input type="date" name="end" value="{{ filter_end }}" class="form-control">
+    </div>
+    <div class="col-md-2">
+      <button class="btn btn-primary w-100">Filtrar</button>
+    </div>
+  </form>
+
+  <!-- Nova estrutura hierárquica -->
+  {% for client, projects in grouped.items %}
+    <div class="card mb-3 client-container">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+          <button class="btn btn-link text-decoration-none" 
+                  data-bs-toggle="collapse" 
+                  data-bs-target="#client-{{ client.id }}">
+            <i class="bi bi-chevron-down"></i>
+            {{ client.name }}
+          </button>
+        </h5>
+        <span class="badge bg-primary">{{ projects|length }} projetos</span>
+      </div>
+      
+      <div id="client-{{ client.id }}" class="collapse show">
+        <div class="card-body">
+          {% for project in projects %}
+            {% if project.code %}
+              <div class="card mb-3 project-container">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                  <div class="d-flex align-items-center">
+                    <h6 class="mb-0">
+                      <button class="btn btn-link text-decoration-none" 
+                              data-bs-toggle="collapse" 
+                              data-bs-target="#project-{{ project.code }}">
+                        <i class="bi bi-chevron-down"></i>
+                        {{ project.title }}
+                      </button>
+                    </h6>
+                    <!-- Novo botão de adicionar task -->
+                    <button class="btn btn-sm btn-outline-primary ms-3"
+                            hx-get="{% url 'tasks:task_add_modal' %}?project={{ project.pk }}"
+                            hx-target="#dialog"
+                            data-bs-toggle="modal"
+                            data-bs-target="#modal">
+                      <i class="bi bi-plus-lg"></i> Nova Task
+                    </button>
+                  </div>
+                  <span class="badge bg-secondary">{{ project.filtered_tasks|length }} tarefas</span>
+                </div>
+                
+                <div id="project-{{ project.code }}" class="collapse show">
+                  <div class="card-body p-0">
+                    <div id="task-panel-{{ project.code }}"
+                         hx-get="{% url 'tasks:task_table_card' project.code %}"
+                         hx-trigger="taskAdded from:body"
+                         hx-swap="outerHTML"
+                         hx-target="this">
+                      {% include "tasks/partials/task_table_card.html" with project=project  active_tasks=project.exclude_closed  closed_tasks=project.closed  closed_count=project.closed.count  %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+
+<style>
+  .client-container .btn-link {
+    padding: 0;
+    color: inherit;
+  }
+  .project-container .btn-link {
+    padding: 0;
+    color: inherit;
+    font-size: 0.9rem;
+  }
+  .card-header .bi {
+    transition: transform 0.2s;
+  }
+  .collapsed .bi {
+    transform: rotate(-90deg);
+  }  
+  .card-header .d-flex.align-items-center {
+    gap: 0.5rem;
+  }
+  
+  .card-header .btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+  }
+</style>
+{% endblock %}
