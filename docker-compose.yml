@@ -9,6 +9,7 @@ services:
       - .env
     environment:
       - DJANGO_ENV=prod  # ou dev, staging
+      - PYTHONPATH=/app
     volumes:
       - .:/app
       - static_volume:/app/static
