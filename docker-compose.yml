@@ -26,8 +26,6 @@ services:
       - ./config/nginx:/etc/nginx/conf.d
       - static_volume:/app/static
       - media_volume:/app/media
-    depends_on:
-      - web
 
 volumes:
   static_volume:
