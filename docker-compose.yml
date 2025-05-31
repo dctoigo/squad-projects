@@ -4,7 +4,7 @@ version: "3.9"
 services:
   web:
     build: .
-    command: gunicorn gestao_projetos.wsgi:application --bind 0.0.0.0:8000
+    command: gunicorn squad-projects.wsgi:application --bind 0.0.0.0:8000
     env_file:
       - .env
     environment:
