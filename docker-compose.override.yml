@@ -1,0 +1,13 @@
+
+version: "3.9"
+
+services:
+  web:
+    environment:
+      - DJANGO_ENV=dev
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+      - ./static:/app/static
+      - ./media:/app/media

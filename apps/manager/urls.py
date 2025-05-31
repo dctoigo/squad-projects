@@ -12,6 +12,7 @@ from .views import (
     servicetype_select_options,
     technology_select_options,
     DashboardExecutiveView,
+    ClientDashboardView
 )
 
 app_name = 'manager'
@@ -49,7 +50,7 @@ urlpatterns = [
 
     # Dashboard
     path('dashboard/executive/', DashboardExecutiveView.as_view(), name='dashboard_executive'),
-
+    path('dashboard/client/', ClientDashboardView.as_view(), name='dashboard_client_view'),
     # Dashboard
     # path('', DashboardView.as_view(), name='dashboard'),
 ]

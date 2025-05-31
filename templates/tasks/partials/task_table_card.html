@@ -1,4 +1,4 @@
-{% load form_helpers task_helpers %}
+{% load form_helpers task_helpers user_tags %}
 <div id="task-panel-{{ project.code }}">
   {% with active_tasks=project.exclude_closed closed_tasks=project.closed %}
     <!-- Active Tasks -->
@@ -36,55 +36,57 @@
                 </td>
                 <td>{{ task.elapsed_time_display }}</td>
                 <td>
-                  {% if task.can_start_or_stop %}
-                    <button class="btn btn-sm {% if task.active_session %}btn-danger{% else %}btn-success{% endif %}"
-                            hx-post="{% url 'tasks:task_toggle_session' task.id %}"
-                            hx-target="#task-panel-{{ project.code }}"
-                            hx-swap="outerHTML"
-                            hx-ext="json-enc">
-                        {% if task.active_session %}
-                            <i class="bi bi-stop-fill"></i>
-                        {% else %}
-                            <i class="bi bi-play-fill"></i>
-                        {% endif %}
-                    </button>
-                  {% endif %}
+                  {% if not request.user|has_group:'client_viewer' %}
+                    {% if task.can_start_or_stop %}
+                      <button class="btn btn-sm {% if task.active_session %}btn-danger{% else %}btn-success{% endif %}"
+                              hx-post="{% url 'tasks:task_toggle_session' task.id %}"
+                              hx-target="#task-panel-{{ project.code }}"
+                              hx-swap="outerHTML"
+                              hx-ext="json-enc">
+                          {% if task.active_session %}
+                              <i class="bi bi-stop-fill"></i>
+                          {% else %}
+                              <i class="bi bi-play-fill"></i>
+                          {% endif %}
+                      </button>
+                    {% endif %}
 
-                  <div class="btn-group ms-1">
-                    <button class="btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown">
-                      <i class="bi bi-three-dots"></i>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                      <li>
-                        <button class="dropdown-item"
-                                hx-get="{% url 'tasks:task_edit' task.id %}"
-                                hx-target="#dialog"
-                                data-bs-toggle="modal"
-                                data-bs-target="#modal">
-                          <i class="bi bi-pencil"></i> Editar
-                        </button>
-                      </li>
-                      <li>
-                        <a class="dropdown-item text-danger"
-                           hx-delete="{% url 'tasks:task_delete' task.id %}"
-                           hx-confirm="Deseja deletar?"
-                           hx-target="#task-{{ task.id }}"
-                           hx-swap="outerHTML">
-                          <i class="bi bi-trash"></i> Deletar
-                        </a>
-                      </li>
-                      <li>
-                        <button class="dropdown-item {% if task.status == 'closed' %}disabled{% endif %}"
-                                hx-post="{% url 'tasks:task_close' task.id %}"
-                                hx-confirm="Tem certeza que deseja encerrar esta tarefa? Esta ação não pode ser desfeita."
-                                hx-target="#task-panel-{{ project.code }}"
-                                hx-swap="outerHTML"
-                                hx-ext="json-enc">
-                            <i class="bi bi-lock"></i> Encerrar Tarefa
-                        </button>
-                      </li>
-                    </ul>
-                  </div>
+                    <div class="btn-group ms-1">
+                      <button class="btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown">
+                        <i class="bi bi-three-dots"></i>
+                      </button>
+                      <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                          <button class="dropdown-item"
+                                  hx-get="{% url 'tasks:task_edit' task.id %}"
+                                  hx-target="#dialog"
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#modal">
+                            <i class="bi bi-pencil"></i> Editar
+                          </button>
+                        </li>
+                        <li>
+                          <a class="dropdown-item text-danger"
+                            hx-delete="{% url 'tasks:task_delete' task.id %}"
+                            hx-confirm="Deseja deletar?"
+                            hx-target="#task-{{ task.id }}"
+                            hx-swap="outerHTML">
+                            <i class="bi bi-trash"></i> Deletar
+                          </a>
+                        </li>
+                        <li>
+                          <button class="dropdown-item {% if task.status == 'closed' %}disabled{% endif %}"
+                                  hx-post="{% url 'tasks:task_close' task.id %}"
+                                  hx-confirm="Tem certeza que deseja encerrar esta tarefa? Esta ação não pode ser desfeita."
+                                  hx-target="#task-panel-{{ project.code }}"
+                                  hx-swap="outerHTML"
+                                  hx-ext="json-enc">
+                              <i class="bi bi-lock"></i> Encerrar Tarefa
+                          </button>
+                        </li>
+                      </ul>
+                    </div>
+                  {% endif %}
                 </td>
               </tr>
               <!-- Linha de detalhes -->

@@ -2,7 +2,7 @@ from datetime import timedelta
 from calendar import month_name
 from collections import defaultdict
 
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import UpdateView, CreateView, TemplateView
 from django.urls import reverse_lazy
 from django.http import HttpResponse
@@ -357,4 +357,29 @@ class DashboardExecutiveView(TemplateView):
         context["filter_month"] = month
         context["filter_year"] = year
 
+        return context
+    
+
+class ClientDashboardView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
+    template_name = 'manager/dashboard_client_view.html'
+
+    def test_func(self):
+        # Usuário está vinculado a um cliente
+        return hasattr(self.request.user, 'party')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        client = getattr(user, 'party', None)
+
+        grouped = defaultdict(list)
+
+        if client:
+            projects = Project.objects.filter(client=client).prefetch_related('tasks__time_sessions')
+            for project in projects:
+                project.filtered_tasks = project.tasks.all()
+                project.sessions = TimeSession.objects.filter(task__project=project)
+                grouped[client].append(project)
+
+        context['grouped'] = dict(grouped)
         return context

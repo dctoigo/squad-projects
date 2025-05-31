@@ -1,4 +1,4 @@
-{% load static custom_filters %}
+{% load static custom_filters user_tags %}
 <nav class="navbar shadow-sm mb-4 px-3" id="main-navbar" data-bs-theme="light">
   <div class="container-fluid justify-content-between align-items-center">
 
@@ -51,50 +51,53 @@
 </nav>
 
 <!-- Offcanvas Menu -->
-<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNav" aria-labelledby="offcanvasNavLabel">
-  <div class="offcanvas-header">
-    <h5 id="offcanvasNavLabel">Navegação</h5>
-    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Fechar"></button>
+ 
+{% if not request.user|has_group:'client_viewer' %}
+  <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNav" aria-labelledby="offcanvasNavLabel">
+    <div class="offcanvas-header">
+      <h5 id="offcanvasNavLabel">Navegação</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Fechar"></button>
+    </div>
+    <div class="offcanvas-body">
+      <ul class="nav nav-pills flex-column">
+        
+        <li class="nav-item">
+          <a class="nav-link {% if request.path == '/dashboard/executive/' %}active{% endif %}" href="{% url 'manager:dashboard_executive' %}">
+            <i class="bi bi-graph-up"></i> Dashboard Excecutivo
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link {% if request.path|startswith:'/clients' %}active{% endif %}" href="{% url 'clients_suppliers:party_list' %}">
+            <i class="bi bi-building"></i> Clientes
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link {% if request.path|startswith:'/contracts' %}active{% endif %}" href="{% url 'contracts:contract_list' %}">
+            <i class="bi bi-file-earmark-text"></i> Contratos
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link {% if request.path|startswith:'/projects' %}active{% endif %}" href="{% url 'projects:project_list' %}">
+            <i class="bi bi-diagram-3"></i> Projetos
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link {% if request.path|startswith:'/tasks' %}active{% endif %}" href="{% url 'tasks:task_list' %}">
+            <i class="bi bi-list-task"></i> Tarefas
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link {% if request.path == '/dashboard/tasks/' %}active{% endif %}" href="{% url 'dashboard_tasks' %}">
+            <i class="bi bi-graph-up"></i> Dashboard Tarefas
+          </a>
+        </li>      
+
+      </ul>
+    </div>
   </div>
-  <div class="offcanvas-body">
-    <ul class="nav nav-pills flex-column">
-      
-      <li class="nav-item">
-        <a class="nav-link {% if request.path == '/dashboard/executive/' %}active{% endif %}" href="{% url 'manager:dashboard_executive' %}">
-          <i class="bi bi-graph-up"></i> Dashboard Excecutivo
-        </a>
-      </li>
-
-      <li class="nav-item">
-        <a class="nav-link {% if request.path|startswith:'/clients' %}active{% endif %}" href="{% url 'clients_suppliers:party_list' %}">
-          <i class="bi bi-building"></i> Clientes
-        </a>
-      </li>
-
-      <li class="nav-item">
-        <a class="nav-link {% if request.path|startswith:'/contracts' %}active{% endif %}" href="{% url 'contracts:contract_list' %}">
-          <i class="bi bi-file-earmark-text"></i> Contratos
-        </a>
-      </li>
-
-      <li class="nav-item">
-        <a class="nav-link {% if request.path|startswith:'/projects' %}active{% endif %}" href="{% url 'projects:project_list' %}">
-          <i class="bi bi-diagram-3"></i> Projetos
-        </a>
-      </li>
-
-      <li class="nav-item">
-        <a class="nav-link {% if request.path|startswith:'/tasks' %}active{% endif %}" href="{% url 'tasks:task_list' %}">
-          <i class="bi bi-list-task"></i> Tarefas
-        </a>
-      </li>
-
-      <li class="nav-item">
-        <a class="nav-link {% if request.path == '/dashboard/tasks/' %}active{% endif %}" href="{% url 'dashboard_tasks' %}">
-          <i class="bi bi-graph-up"></i> Dashboard Tarefas
-        </a>
-      </li>      
-
-    </ul>
-  </div>
-</div>
+{% endif %}

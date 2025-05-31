@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class Party(models.Model):
     TYPE_CHOICES = (
@@ -19,6 +20,7 @@ class Party(models.Model):
     notes = models.TextField('Observações', blank=True, null=True)
     created_at = models.DateTimeField('Criado em', auto_now_add=True)
     updated_at = models.DateTimeField('Atualizado em', auto_now=True)
+    user = models.OneToOneField(User, null=True, blank=True, on_delete=models.SET_NULL, related_name='party')
 
     class Meta:
         verbose_name = 'Parte'

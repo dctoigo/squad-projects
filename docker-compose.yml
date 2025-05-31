@@ -1,0 +1,34 @@
+
+version: "3.9"
+
+services:
+  web:
+    build: .
+    command: gunicorn gestao_projetos.wsgi:application --bind 0.0.0.0:8000
+    env_file:
+      - .env
+    environment:
+      - DJANGO_ENV=prod  # ou dev, staging
+    volumes:
+      - .:/app
+      - static_volume:/app/static
+      - media_volume:/app/media
+    expose:
+      - "8000"
+    depends_on:
+      - nginx
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./config/nginx:/etc/nginx/conf.d
+      - static_volume:/app/static
+      - media_volume:/app/media
+    depends_on:
+      - web
+
+volumes:
+  static_volume:
+  media_volume:
