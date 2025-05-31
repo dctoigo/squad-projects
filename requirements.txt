@@ -12,6 +12,10 @@ django-widget-tweaks==1.5.0
     # via squad-projects (pyproject.toml)
 djangorestframework==3.16.0
     # via squad-projects (pyproject.toml)
+gunicorn==23.0.0
+    # via squad-projects (pyproject.toml)
+packaging==25.0
+    # via gunicorn
 psycopg2==2.9.10
     # via squad-projects (pyproject.toml)
 psycopg2-binary==2.9.10
