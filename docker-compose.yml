@@ -26,6 +26,7 @@ services:
       - ./config/nginx:/etc/nginx/conf.d
       - static_volume:/app/static
       - media_volume:/app/media
+    resatart: always
 
 volumes:
   static_volume:
