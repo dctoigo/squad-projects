@@ -21,7 +21,7 @@ services:
   nginx:
     image: nginx:latest
     ports:
-      - "7000:7000"
+      - "80:80"
     volumes:
       - ./config/nginx:/etc/nginx/conf.d
       - static_volume:/app/static
