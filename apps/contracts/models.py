@@ -12,6 +12,7 @@ class Contract(models.Model):
     client = models.ForeignKey(Party, on_delete=models.PROTECT, related_name='contracts')
     start_date = models.DateField('Start Date')
     due_date   = models.DateField('Due Date', null=True, blank=True)
+    end_date   = models.DateField('End Date', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

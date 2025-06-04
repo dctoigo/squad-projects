@@ -7,7 +7,7 @@ class ContractForm(forms.ModelForm):
         model = Contract
         fields = [
             'client',
-            'start_date', 'due_date',
+            'start_date', 'due_date', 'end_date',
             'billing_type', 'payment_interval', 'value',
             'technologies', 'service_types',
             'scope', 'milestones',
@@ -16,6 +16,7 @@ class ContractForm(forms.ModelForm):
             # datas com input nativo + Bootstrap
             'start_date':      forms.DateInput(attrs={'type':'date','class':'form-control'}),
             'due_date':        forms.DateInput(attrs={'type':'date','class':'form-control'}),
+            'end_date':        forms.DateInput(attrs={'type':'date','class':'form-control'}),
 
             # selects com Bootstrap
             'client':          forms.Select(attrs={'class':'form-select'}),

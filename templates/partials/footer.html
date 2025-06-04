@@ -1,5 +1,43 @@
-<footer class="footer mt-auto py-3 bg-light">
-  <div class="container text-center">
-    <small class="text-muted">Developed with Django &amp; ChatGPT</small>
+{% load static custom_filters %}
+<footer class="footer mt-auto">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-md-6">
+        <div class="d-flex align-items-center">
+          {% if 'img/chronos-logo.png'|file_exists %}
+            <img 
+              src="{% static 'img/chronos-logo.png' %}" 
+              alt="{{ APP_NAME }} Logo" 
+              class="footer-logo me-2"
+            >
+          {% else %}
+            <i class="bi bi-clock-history me-2" style="font-size: 1.2rem; opacity: 0.9;"></i>
+          {% endif %}
+          <div>
+            <div class="fw-medium">{{ APP_NAME }}</div>
+            <small class="text-muted">{{ APP_TAGLINE|default:"Sistema de Gestão de Projetos" }}</small>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 text-md-end">
+        <small class="text-muted">
+          &copy; {% now "Y" %} <strong>Squadra Services</strong><br>
+          Todos os direitos reservados.
+        </small>
+      </div>
+    </div>
+    
+    <hr class="footer-divider">
+    
+    <div class="row">
+      <div class="col-12 text-center">
+        <small class="text-muted">
+          Versão {{ APP_VERSION|default:"1.0.0" }} • 
+          <a href="{% url 'about_chronos' %}">Sobre</a> • 
+          <a href="mailto:suporte@squadra.dev.br">Suporte</a> • 
+          <a href="#" data-bs-toggle="modal" data-bs-target="#helpModal">Ajuda</a>
+        </small>
+      </div>
+    </div>
   </div>
 </footer>

@@ -1,11 +1,10 @@
-
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}Time and Projects Manager{% endblock %}</title>
+  <title>{{ APP_NAME }} | {% block title %}Dashboard{% endblock %}</title>
 
   <!-- Bootswatch Flatly Theme (Bootstrap CSS) -->
   <link
@@ -17,12 +16,6 @@
   <!-- Bootstrap Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
-  <link id="theme-dark" 
-    rel="stylesheet" 
-    href="https://cdn.jsdelivr.net/npm/bootstrap-dark-5@1.1.3/dist/css/bootstrap-night.min.css" 
-    disabled
-  >
-
   <!-- Flatpickr CSS -->
   <link
     rel="stylesheet"
@@ -30,17 +23,38 @@
   >
 
   <!-- Custom CSS -->
+  <link href="{% static 'css/chronos-theme.css' %}" rel="stylesheet">
   <link href="{% static 'css/style.css' %}" rel="stylesheet">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">
+  
+  <!-- Favicons modernos -->
+  <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/favicon-16x16.png' %}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/favicon-32x32.png' %}">
+  
+  <!-- Apple Touch Icon -->
+  <link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/apple-touch-icon.png' %}">
+  
+  <!-- Android Chrome -->
+  <link rel="icon" type="image/png" sizes="192x192" href="{% static 'img/android-chrome-192x192.png' %}">
+  
+  <!-- SVG (suporte moderno) -->
+  <link rel="icon" type="image/svg+xml" href="{% static 'img/chronos-icon.svg' %}">
+
+  <meta name="csrf-token" content="{{ csrf_token }}">
 </head>
 <body class="d-flex flex-column min-vh-100">
 
   {% include 'partials/navbar.html' %}
 
   <main class="flex-fill">
-    <div class="container py-4">
+    <div class="container-fluid py-4">
       {% block content %}{% endblock %}
     </div>
   </main>
+
+  {% include 'partials/footer.html' %}
 
   <!-- Modal -->
   <div id="modal" class="modal fade" tabindex="-1">
@@ -52,7 +66,7 @@
       {% for message in messages %}
           <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
               <div class="toast-header {% if message.tags %}bg-{{ message.tags }}{% endif %}">
-                  <strong class="me-auto">Notification</strong>
+                  <strong class="me-auto">Notificação</strong>
                   <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
               </div>
               <div class="toast-body">
@@ -62,9 +76,11 @@
       {% endfor %}
   </div>
 
+  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://unpkg.com/htmx.org@1.9.2"></script>
 
+  <!-- Custom JS -->
   <script src="{% static 'js/dialog.js' %}"></script>
   <script src="{% static 'js/toast-manager.js' %}"></script>
   <script src="{% static 'js/task-toggle.js' %}"></script>
@@ -76,40 +92,58 @@
     });
   </script>
 
-  <!-- Tema   -->
+  <!-- Theme Toggle Script Melhorado -->
   <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const themeToggle = document.getElementById("themeToggle");
-      const themeIcon = document.getElementById("themeIcon");
-      const navbar = document.getElementById("main-navbar");
-      const offcanvas = document.getElementById("offcanvasNav");
-       function applyTheme() {
-        const isDark = localStorage.getItem("theme") === "dark";
+document.addEventListener("DOMContentLoaded", function () {
+  const themeToggle = document.getElementById("themeToggle");
+  const themeIcon = document.getElementById("themeIcon");
+  const navbar = document.getElementById("main-navbar");
+  const offcanvas = document.getElementById("offcanvasNav");
+  
+  // Detectar preferência do sistema
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const savedTheme = localStorage.getItem("theme");
+  
+  // Definir tema inicial
+  let currentTheme = savedTheme || (prefersDark ? "dark" : "light");
+  
+  function applyTheme(theme) {
+    // Define tema no <html>
+    document.documentElement.setAttribute("data-bs-theme", theme);
 
-        // Define tema no <html>
-        document.documentElement.setAttribute("data-bs-theme", isDark ? "dark" : "light");
+    // Ajusta tema da navbar e do offcanvas
+    if (navbar) navbar.setAttribute("data-bs-theme", theme);
+    if (offcanvas) offcanvas.setAttribute("data-bs-theme", theme);
 
-        // Ajusta tema da navbar e do offcanvas
-        if (navbar) navbar.setAttribute("data-bs-theme", isDark ? "dark" : "light");
-        if (offcanvas) offcanvas.setAttribute("data-bs-theme", isDark ? "dark" : "light");
+    // Ícone de alternância
+    if (themeIcon) {
+      themeIcon.className = theme === "dark" ? "bi bi-sun-fill" : "bi bi-moon-stars-fill";
+    }
+    
+    // Salvar preferência
+    localStorage.setItem("theme", theme);
+    currentTheme = theme;
+  }
 
-        // Ícone de alternância
-        if (themeIcon) {
-          themeIcon.className = isDark ? "bi bi-sun-fill" : "bi bi-moon-stars-fill";
-        }
-      }
+  // Alterna tema ao clicar
+  themeToggle?.addEventListener("click", function () {
+    const newTheme = currentTheme === "dark" ? "light" : "dark";
+    applyTheme(newTheme);
+  });
 
-      // Alterna tema ao clicar
-      themeToggle?.addEventListener("click", function () {
-        const current = localStorage.getItem("theme") === "dark";
-        localStorage.setItem("theme", current ? "light" : "dark");
-        applyTheme();
-      });
+  // Escutar mudanças na preferência do sistema
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+    if (!localStorage.getItem("theme")) {
+      applyTheme(e.matches ? "dark" : "light");
+    }
+  });
 
-      applyTheme(); // Aplica ao carregar
-    });
-  </script>
+  // Aplicar tema inicial
+  applyTheme(currentTheme);
+});
+</script>
 
+  <!-- HTMX CSRF Token -->
   <script>
     document.body.addEventListener('htmx:configRequest', (event) => {
       const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value ||

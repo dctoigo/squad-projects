@@ -24,6 +24,7 @@ class Task(models.Model):
     urgency = models.CharField(max_length=20, choices=URGENCY_CHOICES, default='medium')
     responsible = models.ForeignKey(User, on_delete=models.PROTECT)
     created_at = models.DateTimeField(auto_now_add=True)
+    deadline = models.DateTimeField(null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True)
     closed_at = models.DateTimeField(null=True, blank=True)
 

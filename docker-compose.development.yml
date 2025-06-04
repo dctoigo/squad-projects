@@ -1,0 +1,19 @@
+version: "3.9"
+
+services:
+  web:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+      - /app/__pycache__  # Exclude cache
+    ports:
+      - "8000:8000"
+    environment:
+      - DJANGO_ENVIRONMENT=development
+      - PYTHONPATH=/app
+    env_file:
+      - .env.development
+    restart: unless-stopped

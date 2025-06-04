@@ -1,0 +1,594 @@
+/* Chronos Theme - Dark/Light Mode System */
+
+/* Variáveis para Light Mode (padrão) */
+:root {
+  --chronos-primary: #2c3e50;
+  --chronos-primary-hover: #34495e;
+  --chronos-secondary: #3498db;
+  --chronos-success: #27ae60;
+  --chronos-warning: #f39c12;
+  --chronos-danger: #e74c3c;
+  --chronos-info: #17a2b8;
+  --chronos-purple: #8e44ad;
+  --chronos-bg: #ffffff;
+  --chronos-card-bg: #ffffff;
+  --chronos-text: #2c3e50;
+  --chronos-text-muted: #6c757d;
+  --chronos-border: #dee2e6;
+  
+  /* Cores suaves para cards - light mode */
+  --primary-soft: rgba(44, 62, 80, 0.1);
+  --success-soft: rgba(39, 174, 96, 0.1);
+  --warning-soft: rgba(243, 156, 18, 0.1);
+  --danger-soft: rgba(231, 76, 60, 0.1);
+  --info-soft: rgba(23, 162, 184, 0.1);
+  --purple-soft: rgba(142, 68, 173, 0.1);
+}
+
+/* Variáveis para Dark Mode */
+[data-bs-theme="dark"] {
+  --chronos-primary: #C4F22D;
+  --chronos-primary-hover: #A7E22D;
+  --chronos-secondary: #3498db;
+  --chronos-success: #A7E22D;
+  --chronos-warning: #FFC857;
+  --chronos-danger: #FF5757;
+  --chronos-info: #17a2b8;
+  --chronos-purple: #8e44ad;
+  --chronos-bg: #202124;
+  --chronos-card-bg: #2C2F33;
+  --chronos-text: #EAEAEA;
+  --chronos-text-muted: #B0B0B0;
+  --chronos-border: #3a3d41;
+  
+  /* Cores suaves para cards - dark mode */
+  --primary-soft: rgba(196, 242, 45, 0.15);
+  --success-soft: rgba(167, 226, 45, 0.15);
+  --warning-soft: rgba(255, 200, 87, 0.15);
+  --danger-soft: rgba(255, 87, 87, 0.15);
+  --info-soft: rgba(23, 162, 184, 0.15);
+  --purple-soft: rgba(142, 68, 173, 0.15);
+}
+
+/* Base Theme */
+body {
+  background-color: var(--chronos-bg);
+  color: var(--chronos-text);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Navbar, Offcanvas e Dropdowns */
+.navbar,
+.offcanvas,
+.dropdown-menu {
+  background-color: var(--chronos-card-bg);
+  color: var(--chronos-text);
+  border-color: var(--chronos-border);
+}
+
+.navbar-brand,
+.navbar a.nav-link,
+.offcanvas a.nav-link {
+  color: var(--chronos-primary) !important;
+}
+
+.navbar-brand:hover,
+.navbar a.nav-link:hover,
+.offcanvas a.nav-link:hover {
+  color: var(--chronos-primary-hover) !important;
+}
+
+/* Botões - Sistema adaptativo */
+.btn-primary {
+  background-color: var(--chronos-primary);
+  border-color: var(--chronos-primary);
+  color: var(--chronos-card-bg);
+  font-weight: 500;
+}
+
+.btn-primary:hover {
+  background-color: var(--chronos-primary-hover);
+  border-color: var(--chronos-primary-hover);
+  color: var(--chronos-card-bg);
+}
+
+.btn-outline-primary {
+  color: var(--chronos-primary);
+  border-color: var(--chronos-primary);
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--chronos-primary);
+  color: var(--chronos-card-bg);
+}
+
+.btn-success {
+  background-color: var(--chronos-success);
+  border-color: var(--chronos-success);
+  color: var(--chronos-card-bg);
+}
+
+.btn-warning {
+  background-color: var(--chronos-warning);
+  border-color: var(--chronos-warning);
+  color: var(--chronos-card-bg);
+}
+
+.btn-danger {
+  background-color: var(--chronos-danger);
+  border-color: var(--chronos-danger);
+  color: var(--chronos-card-bg);
+}
+
+.btn-info {
+  background-color: var(--chronos-info);
+  border-color: var(--chronos-info);
+  color: white;
+}
+
+.btn-purple {
+  background-color: var(--chronos-purple);
+  border-color: var(--chronos-purple);
+  color: white;
+}
+
+.btn-purple:hover {
+  background-color: #7d3c98;
+  border-color: #7d3c98;
+  color: white;
+}
+
+/* Cards modernos adaptados */
+.modern-card {
+  border: none;
+  border-radius: 12px;
+  background-color: var(--chronos-card-bg);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  overflow: hidden;
+  color: var(--chronos-text);
+}
+
+[data-bs-theme="dark"] .modern-card {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+}
+
+.modern-card:hover {
+  transform: translateY(-2px);
+}
+
+/* Light mode hover */
+:root .modern-card:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Dark mode hover */
+[data-bs-theme="dark"] .modern-card:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+}
+
+.modern-card .card-body {
+  background-color: var(--chronos-card-bg);
+}
+
+.modern-card .card-header {
+  background-color: var(--chronos-card-bg);
+  border-bottom: 1px solid var(--chronos-border);
+}
+
+/* Ícones de funcionalidades */
+.feature-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.bg-primary-soft { background-color: var(--primary-soft); }
+.bg-success-soft { background-color: var(--success-soft); }
+.bg-warning-soft { background-color: var(--warning-soft); }
+.bg-danger-soft { background-color: var(--danger-soft); }
+.bg-info-soft { background-color: var(--info-soft); }
+.bg-purple-soft { background-color: var(--purple-soft); }
+
+.text-purple { color: var(--chronos-purple); }
+
+/* Cards de estatísticas - gradientes adaptativos */
+.stats-card {
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.stats-card:hover {
+  transform: translateY(-3px);
+}
+
+.stats-card.stats-primary {
+  background: linear-gradient(135deg, var(--chronos-primary) 0%, var(--chronos-primary-hover) 100%);
+  color: var(--chronos-card-bg);
+}
+
+.stats-card.stats-success {
+  background: linear-gradient(135deg, var(--chronos-success) 0%, #219a52 100%);
+  color: var(--chronos-card-bg);
+}
+
+.stats-card.stats-warning {
+  background: linear-gradient(135deg, var(--chronos-warning) 0%, #e67e22 100%);
+  color: var(--chronos-card-bg);
+}
+
+.stats-card.stats-info {
+  background: linear-gradient(135deg, var(--chronos-info) 0%, #138496 100%);
+  color: white;
+}
+
+.stats-icon {
+  font-size: 2rem;
+  opacity: 0.8;
+}
+
+/* Tabelas */
+.table {
+  color: var(--chronos-text);
+  background-color: transparent;
+}
+
+.table thead {
+  background-color: var(--chronos-card-bg);
+  color: var(--chronos-primary);
+  border-color: var(--chronos-border);
+}
+
+.table tbody tr {
+  background-color: var(--chronos-card-bg);
+  border-color: var(--chronos-border);
+}
+
+.table tbody tr:hover {
+  background-color: var(--primary-soft);
+}
+
+/* Badges */
+.badge {
+  font-weight: 500;
+}
+
+.bg-success {
+  background-color: var(--chronos-success) !important;
+  color: var(--chronos-card-bg) !important;
+}
+
+.bg-danger {
+  background-color: var(--chronos-danger) !important;
+  color: var(--chronos-card-bg) !important;
+}
+
+.bg-warning {
+  background-color: var(--chronos-warning) !important;
+  color: var(--chronos-card-bg) !important;
+}
+
+/* Atividades */
+.activity-feed {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.activity-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--chronos-border);
+  transition: background-color 0.2s ease;
+}
+
+.activity-item:hover {
+  background-color: var(--primary-soft);
+  border-radius: 6px;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.activity-item:last-child {
+  border-bottom: none;
+}
+
+.activity-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.activity-content {
+  flex: 1;
+}
+
+.activity-content a {
+  color: var(--chronos-text);
+  font-weight: 500;
+}
+
+.activity-content a:hover {
+  color: var(--chronos-primary);
+}
+
+/* Deadlines */
+.deadline-item {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--chronos-border);
+  transition: background-color 0.2s ease;
+}
+
+.deadline-item:hover {
+  background-color: var(--primary-soft);
+  border-radius: 6px;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.deadline-item:last-child {
+  border-bottom: none;
+}
+
+/* Footer adaptado */
+.footer {
+  background: linear-gradient(135deg, var(--chronos-card-bg) 0%, var(--chronos-bg) 100%);
+  border-top: 1px solid var(--chronos-border);
+  color: var(--chronos-text);
+  padding: 2rem 0 1.5rem;
+}
+
+.footer .text-muted {
+  color: var(--chronos-text-muted) !important;
+}
+
+.footer a {
+  color: var(--chronos-primary);
+  transition: color 0.3s ease;
+}
+
+.footer a:hover {
+  color: var(--chronos-primary-hover);
+  text-decoration: none;
+}
+
+.footer .container {
+  max-width: 1140px;
+}
+
+.footer-logo {
+  height: 20px;
+  opacity: 0.9;
+}
+
+/* Light mode - logo normal */
+:root .footer-logo {
+  filter: none;
+}
+
+/* Dark mode - logo invertida */
+[data-bs-theme="dark"] .footer-logo {
+  filter: brightness(0) invert(1);
+}
+
+.footer-divider {
+  border-color: var(--chronos-border);
+  margin: 1rem 0;
+}
+
+/* Text muted adaptado */
+.text-muted {
+  color: var(--chronos-text-muted) !important;
+}
+
+/* Progress bars */
+.progress {
+  background-color: var(--chronos-border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  background-color: var(--chronos-primary);
+  transition: width 0.6s ease;
+  border-radius: 6px;
+}
+
+.progress-bar.bg-danger {
+  background-color: var(--chronos-danger);
+}
+
+.progress-bar.bg-warning {
+  background-color: var(--chronos-warning);
+}
+
+/* Forms */
+.form-control {
+  background-color: var(--chronos-card-bg);
+  border-color: var(--chronos-border);
+  color: var(--chronos-text);
+}
+
+.form-control:focus {
+  background-color: var(--chronos-card-bg);
+  border-color: var(--chronos-primary);
+  color: var(--chronos-text);
+  box-shadow: 0 0 0 0.2rem var(--primary-soft);
+}
+
+/* Modal adaptado */
+.modal-content {
+  background-color: var(--chronos-card-bg);
+  color: var(--chronos-text);
+  border: 1px solid var(--chronos-border);
+}
+
+.modal-header {
+  border-bottom-color: var(--chronos-border);
+}
+
+.modal-footer {
+  border-top-color: var(--chronos-border);
+}
+
+/* Offcanvas navigation */
+.offcanvas .nav-link.active {
+  background-color: var(--primary-soft);
+  color: var(--chronos-primary) !important;
+  border-radius: 6px;
+}
+
+/* Dropdown customization */
+.dropdown-menu {
+  border: 1px solid var(--chronos-border);
+}
+
+.dropdown-item {
+  color: var(--chronos-text);
+}
+
+.dropdown-item:hover {
+  background-color: var(--primary-soft);
+  color: var(--chronos-primary);
+}
+
+.dropdown-divider {
+  border-color: var(--chronos-border);
+}
+
+/* Toast customizations */
+.toast {
+  background-color: var(--chronos-card-bg);
+  color: var(--chronos-text);
+  border: 1px solid var(--chronos-border);
+}
+
+.toast-header {
+  background-color: var(--chronos-card-bg);
+  color: var(--chronos-text);
+  border-bottom: 1px solid var(--chronos-border);
+}
+
+.toast-header.bg-success {
+  background-color: var(--chronos-success) !important;
+  color: var(--chronos-card-bg) !important;
+}
+
+.toast-header.bg-error,
+.toast-header.bg-danger {
+  background-color: var(--chronos-danger) !important;
+  color: var(--chronos-card-bg) !important;
+}
+
+.toast-header.bg-warning {
+  background-color: var(--chronos-warning) !important;
+  color: var(--chronos-card-bg) !important;
+}
+
+.toast-header.bg-info {
+  background-color: var(--chronos-info) !important;
+  color: white !important;
+}
+
+/* Customização para elementos específicos do Bootstrap */
+.btn-close {
+  filter: none;
+}
+
+[data-bs-theme="dark"] .btn-close {
+  filter: invert(1);
+}
+
+.btn-outline-secondary {
+  color: var(--chronos-text-muted);
+  border-color: var(--chronos-border);
+}
+
+.btn-outline-secondary:hover {
+  background-color: var(--chronos-border);
+  color: var(--chronos-text);
+}
+
+/* Melhorias adicionais */
+.border {
+  border-color: var(--chronos-border) !important;
+}
+
+.border-bottom {
+  border-bottom-color: var(--chronos-border) !important;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .modern-card .card-body {
+    padding: 1.5rem;
+  }
+  
+  .feature-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.25rem;
+  }
+  
+  .stats-card .card-body {
+    padding: 1rem;
+  }
+  
+  .footer {
+    padding: 1.5rem 0 1rem;
+    text-align: center;
+  }
+  
+  .footer .row {
+    text-align: center;
+  }
+  
+  .footer .text-md-end {
+    text-align: center !important;
+    margin-top: 1rem;
+  }
+  
+  .deadline-item,
+  .activity-item {
+    padding: 8px 0;
+  }
+  
+  .activity-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+  }
+  
+  .card.text-center .card-body {
+    padding: 1rem 0.5rem;
+  }
+}
+
+/* Animações suaves para transição de tema */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Theme toggle button enhancement */
+#themeToggle {
+  position: relative;
+  overflow: hidden;
+}
+
+#themeToggle i {
+  transition: transform 0.3s ease;
+}
+
+#themeToggle:hover i {
+  transform: rotate(15deg);
+}

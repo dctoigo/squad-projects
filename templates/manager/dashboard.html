@@ -1,50 +1,363 @@
 {% extends 'base/base.html' %}
+{% load static %}
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-<h1 class="mb-4">Dashboard</h1>
+<!-- Header do Dashboard -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h1 class="h3 mb-1">Bem-vindo ao {{ APP_NAME }}</h1>
+    <p class="text-muted mb-0">
+      <i class="bi bi-calendar3 me-1"></i>
+      {% now "l, d \d\e F \d\e Y" %}
+    </p>
+  </div>
+  <div class="d-flex gap-2">
+    <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#quickAddModal">
+      <i class="bi bi-plus-lg me-1"></i>
+      Ação Rápida
+    </button>
+  </div>
+</div>
 
-<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+<!-- Estatísticas Rápidas -->
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md-3">
+    <div class="card border-0 shadow-sm h-100 stats-card stats-primary">
+      <div class="card-body p-3 text-center">
+        <div class="stats-icon mb-2">
+          <i class="bi bi-building"></i>
+        </div>
+        <h3 class="h5 mb-1">{{ total_clients|default:0 }}</h3>
+        <small class="text-muted">Clientes</small>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-6 col-md-3">
+    <div class="card border-0 shadow-sm h-100 stats-card stats-success">
+      <div class="card-body p-3 text-center">
+        <div class="stats-icon mb-2">
+          <i class="bi bi-diagram-3"></i>
+        </div>
+        <h3 class="h5 mb-1">{{ total_projects|default:0 }}</h3>
+        <small class="text-muted">Projetos</small>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-6 col-md-3">
+    <div class="card border-0 shadow-sm h-100 stats-card stats-warning">
+      <div class="card-body p-3 text-center">
+        <div class="stats-icon mb-2">
+          <i class="bi bi-list-task"></i>
+        </div>
+        <h3 class="h5 mb-1">{{ pending_tasks|default:0 }}</h3>
+        <small class="text-muted">Tarefas Pendentes</small>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-6 col-md-3">
+    <div class="card border-0 shadow-sm h-100 stats-card stats-info">
+      <div class="card-body p-3 text-center">
+        <div class="stats-icon mb-2">
+          <i class="bi bi-file-earmark-text"></i>
+        </div>
+        <h3 class="h5 mb-1">{{ total_contracts|default:0 }}</h3>
+        <small class="text-muted">Contratos</small>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Cards de Navegação Principais -->
+<div class="row g-4 mb-4">
   
   <!-- Clientes e Fornecedores -->
-  <div class="col">
-    <div class="card shadow-sm h-100">
-      <div class="card-body">
-        <h5 class="card-title">Clientes & Fornecedores</h5>
-        <p class="card-text">Gerencie seus parceiros de negócio.</p>
-        <a href="{% url 'clients_suppliers:party_list' %}" class="btn btn-outline-primary">
-          Acessar
-        </a>
+  <div class="col-lg-4 col-md-6">
+    <div class="card modern-card h-100">
+      <div class="card-body p-4">
+        <div class="d-flex align-items-center mb-3">
+          <div class="feature-icon bg-primary-soft me-3">
+            <i class="bi bi-building text-primary"></i>
+          </div>
+          <div>
+            <h5 class="card-title mb-1">Clientes & Fornecedores</h5>
+            <small class="text-muted">Gerencie parceiros</small>
+          </div>
+        </div>
+        <p class="card-text text-muted mb-3">
+          Cadastre e gerencie seus clientes e fornecedores, mantendo informações atualizadas de contato e relacionamento.
+        </p>
+        <div class="d-flex justify-content-between align-items-center">
+          <a href="{% url 'clients_suppliers:party_list' %}" class="btn btn-primary btn-sm">
+            <i class="bi bi-arrow-right me-1"></i>
+            Acessar
+          </a>
+          <small class="text-muted">{{ total_clients|default:0 }} cadastrados</small>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- Contratos -->
-  <div class="col">
-    <div class="card shadow-sm h-100">
-      <div class="card-body">
-        <h5 class="card-title">Contratos</h5>
-        <p class="card-text">Cadastre e acompanhe os contratos firmados.</p>
-        <a href="{% url 'contracts:contract_list' %}" class="btn btn-outline-primary">
-          Acessar
-        </a>
+  <div class="col-lg-4 col-md-6">
+    <div class="card modern-card h-100">
+      <div class="card-body p-4">
+        <div class="d-flex align-items-center mb-3">
+          <div class="feature-icon bg-success-soft me-3">
+            <i class="bi bi-file-earmark-text text-success"></i>
+          </div>
+          <div>
+            <h5 class="card-title mb-1">Contratos</h5>
+            <small class="text-muted">Documentos legais</small>
+          </div>
+        </div>
+        <p class="card-text text-muted mb-3">
+          Cadastre e acompanhe contratos firmados, controlando prazos, valores e cláusulas importantes.
+        </p>
+        <div class="d-flex justify-content-between align-items-center">
+          <a href="{% url 'contracts:contract_list' %}" class="btn btn-success btn-sm">
+            <i class="bi bi-arrow-right me-1"></i>
+            Acessar
+          </a>
+          <small class="text-muted">{{ total_contracts|default:0 }} ativos</small>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Contratos -->
-  <div class="col">
-    <div class="card shadow-sm h-100">
-      <div class="card-body">
-        <h5 class="card-title">Projetos</h5>
-        <p class="card-text">Cadastre e acompanhe os Projetos para desenvolvimento das atividades.</p>
-        <a href="{% url 'projects:project_list' %}" class="btn btn-outline-primary">
-          Acessar
-        </a>
+  <!-- Projetos -->
+  <div class="col-lg-4 col-md-6">
+    <div class="card modern-card h-100">
+      <div class="card-body p-4">
+        <div class="d-flex align-items-center mb-3">
+          <div class="feature-icon bg-info-soft me-3">
+            <i class="bi bi-diagram-3 text-info"></i>
+          </div>
+          <div>
+            <h5 class="card-title mb-1">Projetos</h5>
+            <small class="text-muted">Gestão completa</small>
+          </div>
+        </div>
+        <p class="card-text text-muted mb-3">
+          Organize e acompanhe projetos do início ao fim, controlando cronogramas, recursos e entregas.
+        </p>
+        <div class="d-flex justify-content-between align-items-center">
+          <a href="{% url 'projects:project_list' %}" class="btn btn-info btn-sm">
+            <i class="bi bi-arrow-right me-1"></i>
+            Acessar
+          </a>
+          <small class="text-muted">{{ total_projects|default:0 }} em andamento</small>
+        </div>
       </div>
     </div>
   </div>
 
+  <!-- Tarefas -->
+  <div class="col-lg-4 col-md-6">
+    <div class="card modern-card h-100">
+      <div class="card-body p-4">
+        <div class="d-flex align-items-center mb-3">
+          <div class="feature-icon bg-warning-soft me-3">
+            <i class="bi bi-list-task text-warning"></i>
+          </div>
+          <div>
+            <h5 class="card-title mb-1">Tarefas</h5>
+            <small class="text-muted">Controle de atividades</small>
+          </div>
+        </div>
+        <p class="card-text text-muted mb-3">
+          Gerencie tarefas individuais, defina prioridades e acompanhe o progresso das atividades.
+        </p>
+        <div class="d-flex justify-content-between align-items-center">
+          <a href="{% url 'tasks:task_list' %}" class="btn btn-warning btn-sm">
+            <i class="bi bi-arrow-right me-1"></i>
+            Acessar
+          </a>
+          <small class="text-muted">{{ pending_tasks|default:0 }} pendentes</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dashboard Executivo -->
+  <div class="col-lg-4 col-md-6">
+    <div class="card modern-card h-100">
+      <div class="card-body p-4">
+        <div class="d-flex align-items-center mb-3">
+          <div class="feature-icon bg-purple-soft me-3">
+            <i class="bi bi-graph-up text-purple"></i>
+          </div>
+          <div>
+            <h5 class="card-title mb-1">Dashboard Executivo</h5>
+            <small class="text-muted">Visão estratégica</small>
+          </div>
+        </div>
+        <p class="card-text text-muted mb-3">
+          Análises avançadas, relatórios gerenciais e indicadores de performance para tomada de decisão.
+        </p>
+        <div class="d-flex justify-content-between align-items-center">
+          <a href="{% url 'manager:dashboard_executive' %}" class="btn btn-purple btn-sm">
+            <i class="bi bi-arrow-right me-1"></i>
+            Acessar
+          </a>
+          <small class="text-muted">Relatórios</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dashboard de Tarefas -->
+  <div class="col-lg-4 col-md-6">
+    <div class="card modern-card h-100">
+      <div class="card-body p-4">
+        <div class="d-flex align-items-center mb-3">
+          <div class="feature-icon bg-danger-soft me-3">
+            <i class="bi bi-kanban text-danger"></i>
+          </div>
+          <div>
+            <h5 class="card-title mb-1">Dashboard Tarefas</h5>
+            <small class="text-muted">Visão Kanban</small>
+          </div>
+        </div>
+        <p class="card-text text-muted mb-3">
+          Visualização em quadros Kanban para acompanhar o fluxo de trabalho e produtividade da equipe.
+        </p>
+        <div class="d-flex justify-content-between align-items-center">
+          <a href="{% url 'dashboard_tasks' %}" class="btn btn-danger btn-sm">
+            <i class="bi bi-arrow-right me-1"></i>
+            Acessar
+          </a>
+          <small class="text-muted">Kanban</small>
+        </div>
+      </div>
+    </div>
+  </div>
 
 </div>
+
+<!-- Atividades Recentes -->
+<div class="row">
+  <div class="col-lg-8">
+    <div class="card modern-card">
+      <div class="card-header bg-transparent border-0 pb-0">
+        <h6 class="card-title mb-0">Atividades Recentes</h6>
+      </div>
+      <div class="card-body">
+        <div class="activity-feed">
+          {% for activity in recent_activities %}
+            <div class="activity-item">
+              <div class="activity-icon bg-{{ activity.color }}-soft">
+                <i class="{{ activity.icon }} text-{{ activity.color }}"></i>
+              </div>
+              <div class="activity-content">
+                <p class="mb-1">
+                  <a href="{{ activity.url }}" class="text-decoration-none">{{ activity.title }}</a>
+                </p>
+                {% if activity.subtitle %}
+                  <small class="text-muted d-block">{{ activity.subtitle }}</small>
+                {% endif %}
+                <small class="text-muted">{{ activity.time|timesince }} atrás</small>
+              </div>
+            </div>
+          {% empty %}
+            <div class="text-center py-4">
+              <i class="bi bi-clock-history fs-1 text-muted"></i>
+              <p class="text-muted mt-2">Nenhuma atividade recente</p>
+            </div>
+          {% endfor %}
+        </div>
+        {% if recent_activities %}
+          <div class="text-center mt-3">
+            <a href="#" class="btn btn-outline-primary btn-sm">Ver todas as atividades</a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-lg-4">
+    <div class="card modern-card">
+      <div class="card-header bg-transparent border-0 pb-0">
+        <h6 class="card-title mb-0">Próximos Prazos</h6>
+      </div>
+      <div class="card-body">
+        <div class="deadline-list">
+          {% for deadline in upcoming_deadlines %}
+            <div class="deadline-item">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="fw-medium">{{ deadline.title|truncatechars:25 }}</span>
+                <span class="badge bg-{{ deadline.urgency }}">{{ deadline.urgency_text }}</span>
+              </div>
+              <small class="text-muted">{{ deadline.project }}</small>
+              <div class="d-flex justify-content-between align-items-center mt-1">
+                <small class="text-muted">{{ deadline.deadline|date:"d/m/Y" }}</small>
+                <small class="text-muted">{{ deadline.progress }}%</small>
+              </div>
+              <div class="progress mt-2" style="height: 4px">
+                <div class="progress-bar bg-{{ deadline.urgency }}" style="width: {{ deadline.progress }}%"></div>
+              </div>
+            </div>
+          {% empty %}
+            <div class="text-center py-4">
+              <i class="bi bi-calendar-check fs-1 text-muted"></i>
+              <p class="text-muted mt-2">Nenhum prazo próximo</p>
+            </div>
+          {% endfor %}
+        </div>
+        {% if upcoming_deadlines %}
+          <div class="text-center mt-3">
+            <a href="{% url 'tasks:task_list' %}" class="btn btn-outline-primary btn-sm">Ver todas as tarefas</a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Seção adicional: Métricas Extras -->
+<div class="row g-3 mt-4">
+  <div class="col-md-3">
+    <div class="card modern-card text-center">
+      <div class="card-body p-3">
+        <i class="bi bi-clock-history fs-2 text-info mb-2"></i>
+        <h5 class="mb-1">{{ monthly_hours }}h</h5>
+        <small class="text-muted">Horas este mês</small>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-3">
+    <div class="card modern-card text-center">
+      <div class="card-body p-3">
+        <i class="bi bi-play-circle fs-2 text-success mb-2"></i>
+        <h5 class="mb-1">{{ active_sessions }}</h5>
+        <small class="text-muted">Sessões ativas</small>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-3">
+    <div class="card modern-card text-center">
+      <div class="card-body p-3">
+        <i class="bi bi-check-circle fs-2 text-primary mb-2"></i>
+        <h5 class="mb-1">{{ completed_tasks }}</h5>
+        <small class="text-muted">Tarefas concluídas</small>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-3">
+    <div class="card modern-card text-center">
+      <div class="card-body p-3">
+        <i class="bi bi-graph-up fs-2 text-warning mb-2"></i>
+        <h5 class="mb-1">{{ projects_by_status.active }}</h5>
+        <small class="text-muted">Projetos ativos</small>
+      </div>
+    </div>
+  </div>
+</div>
+
 {% endblock %}

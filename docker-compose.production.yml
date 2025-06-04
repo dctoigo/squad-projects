@@ -1,0 +1,37 @@
+version: "3.9"
+
+services:
+  web:
+    image: ${REGISTRY}/squadra-app:${TAG:-latest}
+    command: gunicorn core.wsgi:application --bind 0.0.0.0:8000 --workers 4 --max-requests 1000
+    environment:
+      - DJANGO_ENVIRONMENT=production
+      - PYTHONPATH=/app
+    env_file:
+      - .env.production
+    volumes:
+      - static_volume:/app/static
+      - media_volume:/app/media
+      - logs_volume:/app/logs
+    expose:
+      - "8000"
+    restart: unless-stopped
+    
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./config/nginx/production.conf:/etc/nginx/conf.d/default.conf
+      - ./config/ssl:/etc/ssl/certs
+      - static_volume:/app/static
+      - media_volume:/app/media
+    depends_on:
+      - web
+    restart: unless-stopped
+
+volumes:
+  static_volume:
+  media_volume:
+  logs_volume:
