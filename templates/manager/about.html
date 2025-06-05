@@ -1,37 +1,42 @@
 {% extends 'base/base.html' %}
+{% load static %}
 
-{% block title %}About Chronos{% endblock %}
+{% block title %}Sobre o Chronos{% endblock %}
+
+{% block page_title %}Sobre o Chronos{% endblock %}
 
 {% block content %}
-<div class="container py-5 text-center">
-  <img src="{% static 'img/chronos-logo.png' %}" alt="Chronos Logo" height="60" class="mb-4">
-
-  <h1 class="display-5 fw-bold text-primary">Chronos</h1>
-  <p class="lead text-muted mb-4">
-    Gestão Inteligente de Projetos, Tarefas e Tempo <br>
-    by <strong>Squadra Services</strong>
-  </p>
-
+<div class="container py-5">
   <div class="row justify-content-center">
-    <div class="col-md-8">
-      <p>
-        <strong>Chronos</strong> é uma plataforma desenvolvida com foco na eficiência e transparência do ciclo completo de projetos.
-        Permite controle de contratos, projetos, tarefas, sessões de tempo e faturamento.
-      </p>
-      <p>
-        Inspirada no universo sci-fi e construída com tecnologias modernas, a aplicação emprega IA, BI e Data Science
-        para fornecer métricas avançadas e insights de desempenho.
-      </p>
-      <p>
-        Nosso objetivo: expandir as capacidades humanas com automação inteligente.
-      </p>
-    </div>
-  </div>
+    <div class="col-lg-8 text-center">
+      <img src="{% static 'img/chronos-logo.png' %}" alt="Chronos Logo" height="60" class="mb-4">
 
-  <div class="mt-5">
-    <a href="{% url 'dashboard' %}" class="btn btn-primary">
-      <i class="bi bi-arrow-left"></i> Voltar ao Dashboard
-    </a>
+      <h1 class="display-5 fw-bold text-primary mb-3">Chronos</h1>
+      <p class="lead text-muted mb-4">
+        Gestão Inteligente de Projetos, Tarefas e Tempo <br>
+        by <strong>Squadra Services</strong>
+      </p>
+
+      <div class="card mb-4">
+        <div class="card-body p-4">
+          <p>
+            <strong>Chronos</strong> é uma plataforma desenvolvida com foco na eficiência e transparência do ciclo completo de projetos.
+            Permite controle de contratos, projetos, tarefas, sessões de tempo e faturamento.
+          </p>
+          <p>
+            Inspirada no universo sci-fi e construída com tecnologias modernas, a aplicação emprega IA, BI e Data Science
+            para fornecer métricas avançadas e insights de desempenho.
+          </p>
+          <p class="mb-0">
+            Nosso objetivo: expandir as capacidades humanas com automação inteligente.
+          </p>
+        </div>
+      </div>
+
+      <a href="{% url 'dashboard' %}" class="btn btn-primary">
+        <i class="bi bi-arrow-left me-1"></i> Voltar ao Dashboard
+      </a>
+    </div>
   </div>
 </div>
 {% endblock %}

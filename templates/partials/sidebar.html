@@ -1,0 +1,69 @@
+{% load static custom_filters user_tags %}
+
+<div class="sidebar">
+  <div class="sidebar-header">
+    <a href="{% url 'dashboard' %}" class="sidebar-brand text-decoration-none">
+      {% if 'img/chronos-logo.png'|file_exists %}
+        <img src="{% static 'img/chronos-logo.png' %}" alt="{{ APP_NAME }} Logo" height="32" class="me-2">
+      {% else %}
+        <i class="bi bi-clock-history text-primary"></i>
+      {% endif %}
+      <span class="text-dark">{{ APP_NAME }}</span>
+    </a>
+  </div>
+  
+  <div class="sidebar-menu">
+    {% if request.user.is_authenticated and not request.user|has_group:'client_viewer' %}
+      <div class="sidebar-item">
+        <a href="{% url 'manager:dashboard_executive' %}" class="sidebar-link {% if 'dashboard_executive' in request.resolver_match.url_name %}active{% endif %}">
+          <i class="bi bi-graph-up"></i>
+          <span>Dashboard Executivo</span>
+        </a>
+      </div>
+      
+      <div class="sidebar-item">
+        <a href="{% url 'clients_suppliers:party_list' %}" class="sidebar-link {% if request.resolver_match.namespace == 'clients_suppliers' %}active{% endif %}">
+          <i class="bi bi-building"></i>
+          <span>Clientes</span>
+        </a>
+      </div>
+      
+      <div class="sidebar-item">
+        <a href="{% url 'contracts:contract_list' %}" class="sidebar-link {% if request.resolver_match.namespace == 'contracts' %}active{% endif %}">
+          <i class="bi bi-file-earmark-text"></i>
+          <span>Contratos</span>
+        </a>
+      </div>
+      
+      <div class="sidebar-item">
+        <a href="{% url 'projects:project_list' %}" class="sidebar-link {% if request.resolver_match.namespace == 'projects' %}active{% endif %}">
+          <i class="bi bi-diagram-3"></i>
+          <span>Projetos</span>
+        </a>
+      </div>
+      
+      <div class="sidebar-item">
+        <a href="{% url 'tasks:task_list' %}" class="sidebar-link {% if request.resolver_match.namespace == 'tasks' %}active{% endif %}">
+          <i class="bi bi-list-task"></i>
+          <span>Tarefas</span>
+        </a>
+      </div>
+      
+      <div class="sidebar-item">
+        <a href="{% url 'dashboard_tasks' %}" class="sidebar-link {% if 'dashboard_tasks' in request.resolver_match.url_name %}active{% endif %}">
+          <i class="bi bi-kanban"></i>
+          <span>Dashboard Tarefas</span>
+        </a>
+      </div>
+      
+      <div class="sidebar-divider"></div>
+      
+      <div class="sidebar-item">
+        <a href="{% url 'about_chronos' %}" class="sidebar-link {% if 'about_chronos' in request.resolver_match.url_name %}active{% endif %}">
+          <i class="bi bi-info-circle"></i>
+          <span>Sobre o {{ APP_NAME }}</span>
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</div>

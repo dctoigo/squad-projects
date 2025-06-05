@@ -1,85 +1,505 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR" data-bs-theme="light">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{ APP_NAME }} | {% block title %}Dashboard{% endblock %}</title>
 
-  <!-- Bootswatch Flatly Theme (Bootstrap CSS) -->
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-    crossorigin="anonymous"
-  >
-
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+  
   <!-- Bootstrap Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-
+  
   <!-- Flatpickr CSS -->
-  <link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
-  >
-
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  
   <!-- Custom CSS -->
   <link href="{% static 'css/chronos-theme.css' %}" rel="stylesheet">
   <link href="{% static 'css/style.css' %}" rel="stylesheet">
   
   <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">
-  
-  <!-- Favicons modernos -->
   <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/favicon-16x16.png' %}">
   <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/favicon-32x32.png' %}">
-  
-  <!-- Apple Touch Icon -->
   <link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/apple-touch-icon.png' %}">
-  
-  <!-- Android Chrome -->
   <link rel="icon" type="image/png" sizes="192x192" href="{% static 'img/android-chrome-192x192.png' %}">
-  
-  <!-- SVG (suporte moderno) -->
   <link rel="icon" type="image/svg+xml" href="{% static 'img/chronos-icon.svg' %}">
 
   <meta name="csrf-token" content="{{ csrf_token }}">
+  
+  <style>
+    :root {
+      --sidebar-width: 280px;
+      --sidebar-collapsed-width: 70px;
+      --topbar-height: 70px;
+      --primary-rgb: 13, 110, 253;
+      --success-rgb: 25, 135, 84;
+      --info-rgb: 13, 202, 240;
+      --warning-rgb: 255, 193, 7;
+      --danger-rgb: 220, 53, 69;
+      --purple-rgb: 111, 66, 193;
+      --teal-rgb: 32, 201, 151;
+      --orange-rgb: 253, 126, 20;
+      --body-bg-light: #f8f9fa;
+      --body-bg-dark: #222736;
+      --sidebar-bg-light: #ffffff;
+      --sidebar-bg-dark: #313a46;
+      --topbar-bg-light: #ffffff;
+      --topbar-bg-dark: #313a46;
+      --card-border-radius: 0.75rem;
+      --transition-speed: 0.3s;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      transition: background-color var(--transition-speed);
+      overflow-x: hidden;
+    }
+    
+    [data-bs-theme="light"] {
+      --body-bg: var(--body-bg-light);
+      --sidebar-bg: var(--sidebar-bg-light);
+      --topbar-bg: var(--topbar-bg-light);
+      --card-bg: #ffffff;
+      --text-muted: #6c757d;
+    }
+    
+    [data-bs-theme="dark"] {
+      --body-bg: var(--body-bg-dark);
+      --sidebar-bg: var(--sidebar-bg-dark);
+      --topbar-bg: var(--topbar-bg-dark);
+      --card-bg: #2a3042;
+      --text-muted: #adb5bd;
+    }
+    
+    body {
+      background-color: var(--body-bg);
+    }
+    
+    /* Layout */
+    .wrapper {
+      display: flex;
+      min-height: 100vh;
+      position: relative;
+    }
+    
+    /* Sidebar */
+    .sidebar {
+      width: var(--sidebar-width);
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      background: var(--sidebar-bg);
+      box-shadow: 0 0 35px 0 rgba(0, 0, 0, 0.05);
+      z-index: 1040;
+      transition: all var(--transition-speed) ease;
+      overflow-y: auto;
+    }
+    
+    .sidebar-collapsed .sidebar {
+      width: var(--sidebar-collapsed-width);
+    }
+    
+    .sidebar-header {
+      height: var(--topbar-height);
+      display: flex;
+      align-items: center;
+      padding: 0 1.5rem;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .sidebar-brand {
+      font-size: 1.25rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    
+    .sidebar-brand img, .sidebar-brand i {
+      margin-right: 0.75rem;
+      height: 32px;
+      width: auto;
+    }
+    
+    .sidebar-collapsed .sidebar-brand span {
+      opacity: 0;
+      width: 0;
+    }
+    
+    .sidebar-menu {
+      padding: 1.5rem 0;
+    }
+    
+    .sidebar-item {
+      padding: 0.5rem 1.5rem;
+      position: relative;
+    }
+    
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: all var(--transition-speed) ease;
+    }
+    
+    .sidebar-link:hover, .sidebar-link.active {
+      color: rgba(var(--primary-rgb), 1);
+      background-color: rgba(var(--primary-rgb), 0.1);
+    }
+    
+    .sidebar-link i {
+      font-size: 1.25rem;
+      margin-right: 0.75rem;
+      width: 1.5rem;
+      text-align: center;
+    }
+    
+    .sidebar-collapsed .sidebar-link span {
+      opacity: 0;
+      width: 0;
+    }
+    
+    .sidebar-divider {
+      height: 1px;
+      background-color: rgba(0, 0, 0, 0.05);
+      margin: 1rem 1.5rem;
+    }
+    
+    /* Content */
+    .content {
+      margin-left: var(--sidebar-width);
+      width: calc(100% - var(--sidebar-width));
+      min-height: 100vh;
+      transition: all var(--transition-speed) ease;
+    }
+    
+    .sidebar-collapsed .content {
+      margin-left: var(--sidebar-collapsed-width);
+      width: calc(100% - var(--sidebar-collapsed-width));
+    }
+    
+    /* Topbar */
+    .topbar {
+      height: var(--topbar-height);
+      background: var(--topbar-bg);
+      position: sticky;
+      top: 0;
+      z-index: 1030;
+      box-shadow: 0 0 35px 0 rgba(0, 0, 0, 0.05);
+      display: flex;
+      align-items: center;
+      padding: 0 1.5rem;
+    }
+    
+    .topbar-toggler {
+      font-size: 1.5rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      margin-right: 1rem;
+    }
+    
+    .topbar-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin: 0;
+      flex-grow: 1;
+    }
+    
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    /* Cards */
+    .card {
+      border: none;
+      box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+      border-radius: var(--card-border-radius);
+      background-color: var(--card-bg);
+      transition: all var(--transition-speed) ease;
+    }
+    
+    .card-header {
+      background-color: transparent;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      padding: 1.25rem 1.5rem;
+    }
+    
+    .card-body {
+      padding: 1.5rem;
+    }
+    
+    /* Stats Card */
+    .stats-card {
+      transition: transform 0.3s ease;
+    }
+    
+    .stats-card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .stats-icon {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      margin: 0 auto 1rem;
+      font-size: 1.5rem;
+    }
+    
+    .stats-primary .stats-icon {
+      background-color: rgba(var(--primary-rgb), 0.1);
+      color: rgba(var(--primary-rgb), 1);
+    }
+    
+    .stats-success .stats-icon {
+      background-color: rgba(var(--success-rgb), 0.1);
+      color: rgba(var(--success-rgb), 1);
+    }
+    
+    .stats-warning .stats-icon {
+      background-color: rgba(var(--warning-rgb), 0.1);
+      color: rgba(var(--warning-rgb), 1);
+    }
+    
+    .stats-info .stats-icon {
+      background-color: rgba(var(--info-rgb), 0.1);
+      color: rgba(var(--info-rgb), 1);
+    }
+    
+    .stats-purple .stats-icon {
+      background-color: rgba(var(--purple-rgb), 0.1);
+      color: rgba(var(--purple-rgb), 1);
+    }
+    
+    /* Feature Card */
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 0.5rem;
+      font-size: 1.5rem;
+    }
+    
+    .bg-primary-soft {
+      background-color: rgba(var(--primary-rgb), 0.1);
+    }
+    
+    .bg-success-soft {
+      background-color: rgba(var(--success-rgb), 0.1);
+    }
+    
+    .bg-info-soft {
+      background-color: rgba(var(--info-rgb), 0.1);
+    }
+    
+    .bg-warning-soft {
+      background-color: rgba(var(--warning-rgb), 0.1);
+    }
+    
+    .bg-danger-soft {
+      background-color: rgba(var(--danger-rgb), 0.1);
+    }
+    
+    .bg-purple-soft {
+      background-color: rgba(var(--purple-rgb), 0.1);
+    }
+    
+    /* Activity Feed */
+    .activity-feed {
+      position: relative;
+    }
+    
+    .activity-item {
+      display: flex;
+      align-items: flex-start;
+      padding: 1rem 0;
+      position: relative;
+    }
+    
+    .activity-item:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      left: 24px;
+      top: 48px;
+      bottom: 0;
+      width: 1px;
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+    
+    .activity-icon {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      margin-right: 1rem;
+      font-size: 1rem;
+      flex-shrink: 0;
+      z-index: 1;
+    }
+    
+    .activity-content {
+      flex-grow: 1;
+    }
+    
+    /* Deadline List */
+    .deadline-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    
+    .deadline-item {
+      padding: 1rem;
+      border-radius: 0.5rem;
+      background-color: rgba(0, 0, 0, 0.02);
+    }
+    
+    /* Responsive */
+    @media (max-width: 991.98px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+      
+      .sidebar-show .sidebar {
+        transform: translateX(0);
+      }
+      
+      .content {
+        margin-left: 0;
+        width: 100%;
+      }
+      
+      .sidebar-show .content {
+        margin-left: 0;
+      }
+      
+      .sidebar-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1035;
+        display: none;
+      }
+      
+      .sidebar-show .sidebar-backdrop {
+        display: block;
+      }
+    }
+    
+    /* Toast */
+    .toast-container {
+      z-index: 1060;
+    }
+    
+    /* Modal */
+    .modal-content {
+      border: none;
+      border-radius: var(--card-border-radius);
+    }
+    
+    /* Buttons */
+    .btn {
+      border-radius: 0.5rem;
+      padding: 0.5rem 1rem;
+      font-weight: 500;
+    }
+    
+    .btn-sm {
+      padding: 0.25rem 0.75rem;
+      font-size: 0.875rem;
+    }
+    
+    .btn-lg {
+      padding: 0.75rem 1.5rem;
+      font-size: 1.125rem;
+    }
+    
+    .btn-purple {
+      color: #fff;
+      background-color: rgba(var(--purple-rgb), 1);
+      border-color: rgba(var(--purple-rgb), 1);
+    }
+    
+    .btn-purple:hover {
+      color: #fff;
+      background-color: rgba(var(--purple-rgb), 0.9);
+      border-color: rgba(var(--purple-rgb), 0.9);
+    }
+    
+    /* Footer */
+    .footer {
+      padding: 1.5rem;
+      text-align: center;
+      border-top: 1px solid rgba(0, 0, 0, 0.05);
+    }
+  </style>
 </head>
-<body class="d-flex flex-column min-vh-100">
-
-  {% include 'partials/navbar.html' %}
-
-  <main class="flex-fill">
-    <div class="container-fluid py-4">
-      {% block content %}{% endblock %}
+<body>
+  <div class="wrapper">
+    <!-- Sidebar -->
+    {% include 'partials/sidebar.html' %}
+    
+    <!-- Sidebar Backdrop (Mobile) -->
+    <div class="sidebar-backdrop"></div>
+    
+    <!-- Content -->
+    <div class="content">
+      <!-- Topbar -->
+      {% include 'partials/topbar.html' %}
+      
+      <!-- Main Content -->
+      <main class="p-4">
+        {% block content %}{% endblock %}
+      </main>
+      
+      <!-- Footer -->
+      {% include 'partials/footer.html' %}
     </div>
-  </main>
-
-  {% include 'partials/footer.html' %}
-
+  </div>
+  
   <!-- Modal -->
   <div id="modal" class="modal fade" tabindex="-1">
     <div id="dialog" class="modal-dialog" hx-target="this"></div>
   </div>
-
+  
   <!-- Toast Container -->
   <div class="toast-container position-fixed bottom-0 end-0 p-3">
-      {% for message in messages %}
-          <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-              <div class="toast-header {% if message.tags %}bg-{{ message.tags }}{% endif %}">
-                  <strong class="me-auto">Notificação</strong>
-                  <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-              </div>
-              <div class="toast-body">
-                  {{ message }}
-              </div>
-          </div>
-      {% endfor %}
+    {% for message in messages %}
+      <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header {% if message.tags %}bg-{{ message.tags }}{% endif %}">
+          <strong class="me-auto">Notificação</strong>
+          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+          {{ message }}
+        </div>
+      </div>
+    {% endfor %}
   </div>
-
+  
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://unpkg.com/htmx.org@1.9.2"></script>
-
+  
   <!-- Custom JS -->
   <script src="{% static 'js/dialog.js' %}"></script>
   <script src="{% static 'js/toast-manager.js' %}"></script>
@@ -91,58 +511,79 @@
       window.toastManager = new ToastManager();
     });
   </script>
-
-  <!-- Theme Toggle Script Melhorado -->
+  
+  <!-- Theme Toggle Script -->
   <script>
-document.addEventListener("DOMContentLoaded", function () {
-  const themeToggle = document.getElementById("themeToggle");
-  const themeIcon = document.getElementById("themeIcon");
-  const navbar = document.getElementById("main-navbar");
-  const offcanvas = document.getElementById("offcanvasNav");
+    document.addEventListener("DOMContentLoaded", function () {
+      const themeToggle = document.getElementById("themeToggle");
+      const themeIcon = document.getElementById("themeIcon");
+      
+      // Detectar preferência do sistema
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const savedTheme = localStorage.getItem("theme");
+      
+      // Definir tema inicial
+      let currentTheme = savedTheme || (prefersDark ? "dark" : "light");
+      
+      function applyTheme(theme) {
+        // Define tema no <html>
+        document.documentElement.setAttribute("data-bs-theme", theme);
+        
+        // Ícone de alternância
+        if (themeIcon) {
+          themeIcon.className = theme === "dark" ? "bi bi-sun-fill" : "bi bi-moon-stars-fill";
+        }
+        
+        // Salvar preferência
+        localStorage.setItem("theme", theme);
+        currentTheme = theme;
+      }
+      
+      // Alterna tema ao clicar
+      themeToggle?.addEventListener("click", function () {
+        const newTheme = currentTheme === "dark" ? "light" : "dark";
+        applyTheme(newTheme);
+      });
+      
+      // Escutar mudanças na preferência do sistema
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        if (!localStorage.getItem("theme")) {
+          applyTheme(e.matches ? "dark" : "light");
+        }
+      });
+      
+      // Aplicar tema inicial
+      applyTheme(currentTheme);
+      
+      // Sidebar Toggle
+      const sidebarToggler = document.getElementById("sidebarToggler");
+      const wrapper = document.querySelector(".wrapper");
+      
+      sidebarToggler?.addEventListener("click", function () {
+        if (window.innerWidth < 992) {
+          wrapper.classList.toggle("sidebar-show");
+        } else {
+          wrapper.classList.toggle("sidebar-collapsed");
+        }
+      });
+      
+      // Close sidebar on backdrop click (mobile)
+      const sidebarBackdrop = document.querySelector(".sidebar-backdrop");
+      sidebarBackdrop?.addEventListener("click", function () {
+        wrapper.classList.remove("sidebar-show");
+      });
+      
+      // Adjust sidebar on window resize
+      window.addEventListener("resize", function () {
+        if (window.innerWidth < 992) {
+          wrapper.classList.remove("sidebar-collapsed");
+        } else {
+          wrapper.classList.remove("sidebar-show");
+        }
+      });
+    });
+  </script>
   
-  // Detectar preferência do sistema
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  const savedTheme = localStorage.getItem("theme");
-  
-  // Definir tema inicial
-  let currentTheme = savedTheme || (prefersDark ? "dark" : "light");
-  
-  function applyTheme(theme) {
-    // Define tema no <html>
-    document.documentElement.setAttribute("data-bs-theme", theme);
-
-    // Ajusta tema da navbar e do offcanvas
-    if (navbar) navbar.setAttribute("data-bs-theme", theme);
-    if (offcanvas) offcanvas.setAttribute("data-bs-theme", theme);
-
-    // Ícone de alternância
-    if (themeIcon) {
-      themeIcon.className = theme === "dark" ? "bi bi-sun-fill" : "bi bi-moon-stars-fill";
-    }
-    
-    // Salvar preferência
-    localStorage.setItem("theme", theme);
-    currentTheme = theme;
-  }
-
-  // Alterna tema ao clicar
-  themeToggle?.addEventListener("click", function () {
-    const newTheme = currentTheme === "dark" ? "light" : "dark";
-    applyTheme(newTheme);
-  });
-
-  // Escutar mudanças na preferência do sistema
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-    if (!localStorage.getItem("theme")) {
-      applyTheme(e.matches ? "dark" : "light");
-    }
-  });
-
-  // Aplicar tema inicial
-  applyTheme(currentTheme);
-});
-</script>
-
   <!-- HTMX CSRF Token -->
   <script>
     document.body.addEventListener('htmx:configRequest', (event) => {
@@ -153,6 +594,5 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
   </script>
-
 </body>
 </html>

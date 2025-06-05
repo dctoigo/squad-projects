@@ -32,7 +32,8 @@
     <div class="row">
       <div class="col-12 text-center">
         <small class="text-muted">
-          Versão {{ APP_VERSION|default:"1.0.0" }} • 
+          Versão {{ APP_VERSION|default:"1.0.0" }}
+          {% if APP_GIT_COMMIT %} • Build {{ APP_GIT_COMMIT }}{% endif %} • 
           <a href="{% url 'about_chronos' %}">Sobre</a> • 
           <a href="mailto:suporte@squadra.dev.br">Suporte</a> • 
           <a href="#" data-bs-toggle="modal" data-bs-target="#helpModal">Ajuda</a>
